@@ -1,5 +1,6 @@
 const { logger, tenantStorage, createChatExpirationDate } = require('@librechat/data-schemas');
 const { v5: uuidv5 } = require('uuid');
+const { closeTurn, setIdentity } = require('pendo-server-sdk');
 const {
   Constants,
   EModelEndpoint,
@@ -1090,6 +1091,13 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
   // Treat "new" as a placeholder that needs a real UUID (frontend may send "new" for new convos)
   const streamId = conversationId;
   req.body.conversationId = conversationId;
+  setIdentity({
+    // TODO: map to the visitor id your Pendo web snippet uses
+    visitorId: userId,
+    // TODO: map to the Pendo account id
+    accountId: tenantId,
+    conversationId,
+  });
 
   /** A durable continuation trigger appends below a completed parent response. If
    * that response belongs to a still-running or paused generation, admitting
@@ -3543,6 +3551,7 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
         }
       })
       .finally(async () => {
+        closeTurn(conversationId);
         await Promise.allSettled([immediateTitlePromise, trailingWritePromise].filter(Boolean));
         if (providerExecutionId) {
           await GenerationJobManager.markProviderExecutionDrained?.(
