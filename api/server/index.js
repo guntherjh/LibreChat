@@ -1,6 +1,18 @@
 require('../config/credentials');
 
 const telemetry = require('./telemetry');
+const pendo = require('pendo-server-sdk');
+
+/* Pendo Agent Analytics. Runs after `./telemetry` so it attaches to the OpenTelemetry
+ * provider registered there instead of claiming the global one first, and before
+ * `@librechat/api` loads the LLM clients it patches. */
+pendo.init({
+  apiKey: 'f60e6cc4-bd3d-4a2a-9934-7c5e4eac26e1',
+  agentId: 'o-Ct08GpyAm9mnFZU95AHRKN7hE',
+  endpoint: 'https://app.pendo-security.pendo-dev.com',
+  autoPatch: true,
+});
+
 const fs = require('fs');
 const path = require('path');
 require('module-alias')({ base: path.resolve(__dirname, '..') });
@@ -13,7 +25,7 @@ const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const { logger, runAsSystem, createRoleChangeSource } = require('@librechat/data-schemas');
-const { CacheKeys } = require('librechat-data-provider');
+const { CacheKeys, Constants } = require('librechat-data-provider');
 const getLogStores = require('~/cache/getLogStores');
 const {
   isEnabled,
@@ -130,6 +142,9 @@ configureFileConfigRegexEngine();
 
 /** Reject messageFilter PII patterns the RE2 runtime engine cannot compile, at config load. */
 configureMessageFilterRegexValidator();
+
+/** Flush buffered Pendo events on SIGINT and SIGTERM, before the OpenTelemetry exporters close. */
+registerShutdownTask('pendo agent analytics', () => pendo.shutdown(), { priority: -50 });
 
 const { PORT, HOST, ALLOW_SOCIAL_LOGIN, DISABLE_COMPRESSION, TRUST_PROXY } = process.env ?? {};
 
@@ -445,6 +460,29 @@ const startServer = async () => {
     app.use(telemetry.telemetryMiddleware);
   }
   app.use('/api/agents/chat', agentStartupTelemetryMiddleware);
+
+  /* Pendo identity for each agent turn. Authentication runs inside the routers, so
+   * `req.user` is not set yet here: AgentController sets the authenticated user. */
+  app.use(
+    [
+      '/api/agents/chat',
+      '/api/agents/v1/chat/completions',
+      '/api/agents/v1/responses',
+      '/api/assistants/v1/chat',
+      '/api/assistants/v2/chat',
+    ],
+    pendo.middleware((req) => {
+      const convo = req.body?.conversationId ?? req.body?.conversation_id ?? req.body?.thread_id;
+      return {
+        // TODO: map to the visitor id your Pendo web snippet uses
+        visitorId: req.get('x-user-id'),
+        // TODO: map to the Pendo account id
+        accountId: req.get('x-account-id'),
+        // TODO: new conversations send 'new' and get their id in AgentController; the Responses API carries none
+        conversationId: convo && convo !== Constants.NEW_CONVO ? convo : undefined,
+      };
+    }),
+  );
 
   if (!ALLOW_SOCIAL_LOGIN) {
     console.warn('Social logins are disabled. Set ALLOW_SOCIAL_LOGIN=true to enable them.');
