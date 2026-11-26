@@ -112,7 +112,7 @@ const PromptName: React.FC<Props> = ({
       {newName}
     </span>
   ) : (
-    <button
+    <button data-novus-id="prompt-detail-rename-a-prompt-or-edit-its-details"
       type="button"
       onClick={() => {
         if (!isLoading && saveStatus !== 'saving') {

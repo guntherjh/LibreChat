@@ -99,7 +99,7 @@ const RunCode: React.FC<CodeBarProps & { iconOnly?: boolean }> = React.memo(
     const stateIcon = stateIcons[runState];
 
     const button = (
-      <button
+      <button data-novus-id="chat-run-code-from-a-code-block"
         type="button"
         onClick={debouncedExecute}
         disabled={isLoading}

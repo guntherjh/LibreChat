@@ -41,7 +41,7 @@ export default function Sidebar({
           className="text-text-tertiary pointer-events-none absolute inset-s-2 top-1/2 h-4 w-4 -translate-y-1/2"
           aria-hidden="true"
         />
-        <input
+        <input data-novus-id="global-search-settings"
           type="text"
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}

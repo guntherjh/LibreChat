@@ -214,7 +214,7 @@ export default function UploadSkillDialog({ isOpen, setIsOpen }: UploadSkillDial
           </h2>
 
           <div className="flex flex-col gap-3">
-            <button
+            <button data-novus-id="skills-upload-a-skill"
               type="button"
               onClick={() => fileInputRef.current?.click()}
               onDragOver={(e) => {

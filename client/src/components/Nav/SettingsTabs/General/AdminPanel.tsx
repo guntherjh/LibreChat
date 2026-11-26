@@ -16,7 +16,7 @@ export default function AdminPanel() {
     <div className="flex items-center justify-between">
       <Label id="admin-panel-label">{localize('com_ui_admin_panel')}</Label>
       <Button asChild variant="outline" aria-labelledby="admin-panel-label">
-        <a href={adminPanelURL} target="_blank" rel="noopener noreferrer">
+        <a data-novus-id="global-open-the-admin-panel" href={adminPanelURL} target="_blank" rel="noopener noreferrer">
           {localize('com_ui_open_var', { 0: localize('com_ui_admin_panel') })}
           <ExternalLink className="size-4" aria-hidden="true" />
         </a>
