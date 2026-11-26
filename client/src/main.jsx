@@ -12,6 +12,28 @@ import { clearTTSCache } from './utils/ttscache';
 /** Read-aloud audio lives in memory now; drop what earlier versions persisted to disk. */
 void clearTTSCache();
 
+/**
+ * Anonymous until `components/System/Pendo` identifies the signed-in user. The router reads no
+ * fragment, so clearing it only drops the channel link ticket from recorded URLs. `tempToken` is
+ * unique to the 2FA step; the generic `token` is stripped only on the pages that carry one.
+ */
+window.pendo.initialize({
+  visitor: { id: '' },
+  location: {
+    transforms: [
+      { attr: 'hash', action: 'Clear' },
+      {
+        attr: 'search',
+        action: 'ExcludeKeys',
+        data: (_search, url) =>
+          /\/(?:verify|register|reset-password)\/?$/.test(url.pathname)
+            ? ['tempToken', 'token']
+            : ['tempToken'],
+      },
+    ],
+  },
+});
+
 const container = document.getElementById('root');
 const root = createRoot(container);
 

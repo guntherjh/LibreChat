@@ -50,6 +50,7 @@ import { resetChatFilterSessionAtom } from '~/components/Conversations/chatFilte
 import { TAuthConfig, TUserContext, TAuthContext, TResError } from '~/common';
 import { resetFacetsAtom } from '~/components/Conversations/facets';
 import { resetMCPStateAtom } from '~/store/mcp';
+import Pendo from '~/components/System/Pendo';
 import useTimeout from './useTimeout';
 import store from '~/store';
 
@@ -237,6 +238,8 @@ const AuthContextProvider = ({
   });
   const { mutate: logoutMutate } = useLogoutUserMutation({
     onSuccess: (data) => {
+      /** The next sign-in in this tab must not be attributed to the account leaving. */
+      window.pendo?.clearSession?.();
       if (data.redirect) {
         /** data.redirect is the IdP's end_session_endpoint URL: an absolute URL generated
          * server-side from trusted IdP metadata (not user input), so isSafeRedirect is bypassed.
@@ -257,6 +260,7 @@ const AuthContextProvider = ({
       });
     },
     onError: (error) => {
+      window.pendo?.clearSession?.();
       endSessionClientState();
       doSetError((error as Error).message);
       setUserContext({
@@ -525,6 +529,7 @@ const AuthContextProvider = ({
       {/* Query subscriptions commit child-first; enqueue permissions before descendant discovery. */}
       <RoleQueryPriority isAuthenticated={isAuthenticated} userRoleName={userRoleName} />
       {children}
+      <Pendo user={user} isAuthenticated={isAuthenticated} />
     </AuthContext.Provider>
   );
 };
