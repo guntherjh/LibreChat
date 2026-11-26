@@ -29,6 +29,12 @@
         "types": "./dist/credentials.d.cts",
         "default": "./dist/credentials.cjs"
       }
+    },
+    "./pendo": {
+      "require": {
+        "types": "./dist/pendo.d.cts",
+        "default": "./dist/pendo.cjs"
+      }
     }
   },
   "scripts": {

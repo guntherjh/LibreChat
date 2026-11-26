@@ -11,6 +11,7 @@ const {
   requireTwoFactorSetupAcknowledgementToken,
   requireTwoFactorSetupFinalizationToken,
 } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const {
   resetPasswordRequestController,
   resetPasswordController,
@@ -80,6 +81,7 @@ router.post(
   middleware.validateEmailLogin,
   ldapAuth ? middleware.requireLdapAuth : middleware.requireLocalAuth,
   setBalanceConfig,
+  pendo.trackSignedIn(ldapAuth ? 'ldap' : 'local'),
   loginController,
 );
 router.post('/refresh', refreshController);
@@ -119,6 +121,7 @@ router.post(
   middleware.resetPasswordSubmissionLimiter,
   middleware.checkBan,
   middleware.validatePasswordReset,
+  pendo.trackPasswordResetCompleted(),
   resetPasswordController,
 );
 
@@ -160,6 +163,7 @@ router.post(
   middleware.twoFactorSetupLimiter,
   middleware.checkBan,
   requireTwoFactorSetupFinalizationToken,
+  pendo.trackTwoFactorEnabled('required'),
   finalize2FASetup,
 );
 router.post(
@@ -180,9 +184,16 @@ router.post(
   middleware.setTwoFactorTempUser,
   middleware.twoFactorTempLimiter,
   middleware.checkBan,
+  pendo.trackSignedIn('two_factor'),
   verify2FAWithTempToken,
 );
-router.post('/2fa/confirm', middleware.requireJwtAuth, twoFactorManagementLimiter, confirm2FA);
+router.post(
+  '/2fa/confirm',
+  middleware.requireJwtAuth,
+  twoFactorManagementLimiter,
+  pendo.trackTwoFactorEnabled('opt_in'),
+  confirm2FA,
+);
 router.post(
   '/2fa/disable',
   middleware.requireJwtAuth,
@@ -215,6 +226,7 @@ router.post(
   middleware.checkBan,
   authenticatePasskey,
   setBalanceConfig,
+  pendo.trackSignedIn('passkey'),
   loginController,
 );
 router.get('/passkey', middleware.requireJwtAuth, listPasskeys);
@@ -228,6 +240,7 @@ router.post(
   '/passkey/register/verify',
   middleware.requireJwtAuth,
   middleware.passkeyStepUpLimiter,
+  pendo.trackPasskeyRegistered(),
   registerPasskeyVerify,
 );
 router.patch('/passkey/:passkeyId', middleware.requireJwtAuth, updatePasskey);

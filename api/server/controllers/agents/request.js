@@ -74,6 +74,7 @@ const {
   getPreliminaryResponseMessageId,
   describeCreatedTurn,
 } = require('@librechat/api');
+const { PendoEvent, trackPendoEvent } = require('@librechat/api/pendo');
 const { disposeClient } = require('~/server/cleanup');
 const {
   getMCPRequestContext,
@@ -3164,6 +3165,18 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
           'api/server/controllers/agents/request.js - recovered response message reference',
         );
         logAgentMemorySnapshot('after_terminal_save', terminalMemoryContext);
+        trackPendoEvent({
+          event: PendoEvent.responseGenerated,
+          visitorId: userId,
+          accountId: tenantId,
+          properties: {
+            endpoint: endpointOption?.endpoint,
+            model: savedResponseMessage.model,
+            is_new_convo: isNewConvo,
+            is_scheduled: isScheduledFire,
+            unfinished: responseIsUnfinished,
+          },
+        });
         if (appliedEventActor != null) {
           const recorded = await recordAgentEventActorReconciliation({
             user: userId,

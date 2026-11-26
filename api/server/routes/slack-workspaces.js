@@ -1,5 +1,6 @@
 const express = require('express');
 const { setOAuthSession, preAuthTenantMiddleware } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const { requireJwtAuth, requireSameOrigin } = require('~/server/middleware');
 const { markOAuthNavigation } = require('~/server/middleware/oauthNavigation');
 const { loginLimiter } = require('~/server/middleware/limiters');
@@ -37,6 +38,7 @@ router.post(
   requireJwtAuth,
   requireSameOrigin,
   setOAuthSession,
+  pendo.trackSlackConnectStarted(),
   handlers.connect,
 );
 router.delete('/workspaces/:workspaceId', requireJwtAuth, requireSameOrigin, handlers.disconnect);

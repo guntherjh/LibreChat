@@ -25,6 +25,7 @@ const {
   resolveDownloadPath,
   pipeToResponse,
 } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const {
   isUUID,
   FileSources,
@@ -955,7 +956,7 @@ const handleFileUpload = async (req, res) => {
   }
 };
 
-router.post('/', handleFileUpload);
+router.post('/', pendo.trackFileUploaded(), handleFileUpload);
 
 module.exports = router;
 module.exports.handleFileUpload = handleFileUpload;

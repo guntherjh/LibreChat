@@ -57,6 +57,7 @@ const {
   applySdkAgentBindingWrite,
   getSdkAgentWriteErrorStatus,
 } = require('@librechat/api');
+const { PendoEvent, trackPendoEvent } = require('@librechat/api/pendo');
 const {
   Time,
   Tools,
@@ -941,6 +942,12 @@ const createAgentHandler = async (req, res) => {
       );
     }
 
+    trackPendoEvent({
+      event: PendoEvent.agentCreated,
+      visitorId: userId,
+      accountId: req.user.tenantId,
+      properties: { provider: agent.provider, tool_count: tools.length },
+    });
     res.status(201).json(agent);
   } catch (error) {
     if (error instanceof z.ZodError) {

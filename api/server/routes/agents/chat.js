@@ -11,6 +11,7 @@ const {
   getSafeErrorMetadata,
   validateChatMessageIds,
 } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const { PermissionTypes, Permissions, PermissionBits } = require('librechat-data-provider');
 const {
   moderateText,
@@ -79,7 +80,7 @@ const resumeController = async (req, res, next) => {
  * @access Private
  * @returns {void}
  */
-router.post('/resume', resumeController);
+router.post('/resume', pendo.trackPausedRunResumed(), resumeController);
 
 /**
  * @route POST / (regular endpoint)

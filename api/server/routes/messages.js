@@ -38,6 +38,7 @@ const {
   awaitPageSize,
   withMessageToolCallPreviews,
 } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const subagentThreadTaskStore = require('~/server/services/Endpoints/agents/subagentThreadStore');
 const { getAppConfig } = require('~/server/services/Config');
 const { findAllArtifacts, replaceArtifactContent } = require('~/server/services/Artifacts/update');
@@ -772,6 +773,7 @@ router.put(
   configMiddleware,
   requireFeedbackEnabled,
   filterFeedbackContent,
+  pendo.trackResponseFeedbackSaved(),
   async (req, res) => {
     try {
       const { conversationId, messageId } = req.params;

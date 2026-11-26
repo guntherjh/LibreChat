@@ -25,6 +25,7 @@ const {
   compareSecret,
   sanitizeUserForResponse,
 } = require('@librechat/api');
+const { PendoEvent, trackPendoEvent } = require('@librechat/api/pendo');
 const { Tools, Constants, FileSources } = require('librechat-data-provider');
 const { updateUserPluginAuth, deleteUserPluginAuth } = require('~/server/services/PluginService');
 const { verifyOTPOrBackupCode } = require('~/server/services/twoFactorService');
@@ -449,6 +450,7 @@ const deleteUserController = async (req, res) => {
     });
     await purgeAgentTriggerDeliveriesForUser(user.id);
     logger.info(`User deleted account. ID: ${user.id} Tenant: ${tenantId ?? 'none'}`);
+    trackPendoEvent({ event: PendoEvent.accountDeleted, visitorId: user.id, accountId: tenantId });
     res.status(200).send({ message: 'User deleted' });
   } catch (err) {
     // The account survives this failed attempt, so its schedules must too: restore the
