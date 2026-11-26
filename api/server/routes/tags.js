@@ -1,6 +1,7 @@
 const express = require('express');
 const { logger } = require('@librechat/data-schemas');
 const { generateCheckAccess } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const { PermissionTypes, Permissions } = require('librechat-data-provider');
 const {
   updateTagsForConversation,
@@ -49,7 +50,7 @@ router.get('/', async (req, res) => {
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  */
-router.post('/', async (req, res) => {
+router.post('/', pendo.trackBookmarkCreated(), async (req, res) => {
   try {
     const tag = await createConversationTag(req.user.id, req.body);
     res.status(200).json(tag);

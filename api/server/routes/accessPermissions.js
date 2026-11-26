@@ -7,6 +7,7 @@ const {
   PermissionBits,
 } = require('librechat-data-provider');
 const { createAgentAdminPermissionAccess, isAgentPermissionsAdmin } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const {
   getUserEffectivePermissions,
   getAllEffectivePermissions,
@@ -204,6 +205,7 @@ router.put(
   checkSharePublicAccess,
   rejectSharedLinkOwnerPermissionChanges,
   configMiddleware,
+  pendo.trackResourceAccessUpdated(),
   updateResourcePermissions,
 );
 

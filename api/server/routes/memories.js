@@ -9,6 +9,7 @@ const {
   projectStoredMemories,
   createMemoryManagementHandlers,
 } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const {
   PermissionTypes,
   PermissionBits,
@@ -177,7 +178,7 @@ router.get('/', checkMemoryRead, configMiddleware, async (req, res) => {
  * Body: { key: string, value: string }
  * Returns 201 and { created: true, memory: <createdDoc> } when successful.
  */
-router.post('/', createMemoryMiddleware, async (req, res) => {
+router.post('/', createMemoryMiddleware, pendo.trackMemorySaved(), async (req, res) => {
   const { key, value } = req.body;
   const agentId = getMemoryAgentIdParam(req.body.agentId);
 

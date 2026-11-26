@@ -10,6 +10,7 @@ const {
   generateCheckAccess,
   restoreTenantContextFromReq,
 } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const { logger } = require('@librechat/data-schemas');
 const {
   PermissionBits,
@@ -178,11 +179,12 @@ router.post(
   fileUploadUserLimiter,
   skillUpload,
   restoreTenantContextFromReq,
+  pendo.trackSkillImported(),
   importHandler,
 );
 
 router.get('/', maybeStartRequestSkillSync, handlers.list);
-router.post('/', checkSkillCreate, handlers.create);
+router.post('/', checkSkillCreate, pendo.trackSkillCreated(), handlers.create);
 
 router.get(
   '/:id',

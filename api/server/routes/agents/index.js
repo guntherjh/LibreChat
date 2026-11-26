@@ -33,6 +33,7 @@ const {
   startSseKeepalive,
 } = require('@librechat/api');
 const { createSseStreamTelemetry } = require('@librechat/api/telemetry');
+const pendo = require('@librechat/api/pendo');
 const { logger } = require('@librechat/data-schemas');
 const {
   uaParser,
@@ -192,6 +193,7 @@ router.post(
   chatConfigMiddleware,
   ...(isEnabled(LIMIT_MESSAGE_IP) ? [messageIpLimiter] : []),
   ...(isEnabled(LIMIT_MESSAGE_USER) ? [messageUserLimiter] : []),
+  pendo.trackBackgroundReviewSubmitted(),
   submitBackgroundResponseReview,
 );
 router.post(

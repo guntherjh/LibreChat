@@ -1,5 +1,6 @@
 const express = require('express');
 const { createProjectHandlers } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const { configMiddleware, requireJwtAuth } = require('~/server/middleware');
 const db = require('~/models');
 
@@ -18,11 +19,20 @@ const handlers = createProjectHandlers({
 });
 router.use(requireJwtAuth);
 router.get('/', handlers.listProjects);
-router.post('/', configMiddleware, handlers.createProject);
-router.put('/conversations/:conversationId', handlers.assignConversationToProject);
+router.post('/', configMiddleware, pendo.trackProjectCreated(), handlers.createProject);
+router.put(
+  '/conversations/:conversationId',
+  pendo.trackChatAssignedToProject(),
+  handlers.assignConversationToProject,
+);
 router.get('/:projectId/files/available', handlers.listAvailableProjectFiles);
 router.get('/:projectId/files', handlers.listProjectFiles);
-router.post('/:projectId/files', configMiddleware, handlers.addProjectFile);
+router.post(
+  '/:projectId/files',
+  configMiddleware,
+  pendo.trackProjectFileAdded(),
+  handlers.addProjectFile,
+);
 router.delete('/:projectId/files/:fileId', handlers.removeProjectFile);
 router.get('/:projectId', handlers.getProject);
 router.patch('/:projectId', configMiddleware, handlers.updateProject);

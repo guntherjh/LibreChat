@@ -27,6 +27,7 @@ const {
   resolveDownloadPath,
   prepareResultToolCallPreviews,
 } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const {
   logger,
   runAsSystem,
@@ -418,6 +419,7 @@ if (allowSharedLinks) {
     forkUserLimiter,
     canAccessSharedLink,
     sharedLinkConfigMiddleware,
+    pendo.trackSharedConversationContinued(),
     async (req, res) => {
       try {
         const previewToolCalls = prepareResultToolCallPreviews(req, { getAppConfig });
@@ -633,6 +635,7 @@ router.post(
   requireJwtAuth,
   configMiddleware,
   checkSharedLinksAccess,
+  pendo.trackSharedLinkCreated(),
   async (req, res) => {
     try {
       const { targetMessageId, snapshotFiles: requestedSnapshotFiles } = req.body ?? {};

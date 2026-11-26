@@ -4,6 +4,7 @@ const {
   createPromptHandlers,
   invalidateLinkedPrompt,
 } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const {
   CacheKeys,
   Permissions,
@@ -72,7 +73,13 @@ router.get(
 router.get('/all', configMiddleware, handlers.listAllPromptGroups);
 router.get('/groups', configMiddleware, handlers.listPromptGroups);
 
-router.post('/', checkPromptCreate, configMiddleware, handlers.createPromptGroup);
+router.post(
+  '/',
+  checkPromptCreate,
+  configMiddleware,
+  pendo.trackPromptCreated(),
+  handlers.createPromptGroup,
+);
 router.post(
   '/groups/:groupId/prompts',
   checkPromptAccess,

@@ -1,4 +1,5 @@
 const express = require('express');
+const pendo = require('@librechat/api/pendo');
 const { PermissionBits } = require('librechat-data-provider');
 const { canAccessAgentResource, requireSameOrigin } = require('~/server/middleware');
 const handlers = require('~/server/services/Channels');
@@ -14,7 +15,7 @@ router.use(
   }),
 );
 router.get('/', handlers.list);
-router.post('/', handlers.create);
+router.post('/', pendo.trackAgentChannelCreated(), handlers.create);
 router.post('/workspace-connections', requireSameOrigin, workspaceBindings.create);
 router.get('/:channelId/workspace-routes', workspaceBindings.read);
 router.post('/:channelId/workspace-routes', requireSameOrigin, workspaceBindings.assign);

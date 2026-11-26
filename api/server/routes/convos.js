@@ -54,6 +54,7 @@ const {
   isStopConfirmed,
   withToolCallPreviews,
 } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const { logger } = require('@librechat/data-schemas');
 const { CacheKeys, EModelEndpoint } = require('librechat-data-provider');
 const {
@@ -525,7 +526,7 @@ async function deleteOwnerConversationPersistence(userId, filter, tenantId, chec
   return { ...result, conversationIds: targets };
 }
 
-router.delete('/', configMiddleware, async (req, res) => {
+router.delete('/', configMiddleware, pendo.trackConversationDeleted(), async (req, res) => {
   let filter = {};
   const { conversationId, source, thread_id, endpoint } = req.body?.arg ?? {};
 
@@ -696,7 +697,13 @@ router.delete('/all', configMiddleware, async (req, res) => {
  * @param {boolean} req.body.arg.isArchived - Whether to archive (true) or unarchive (false).
  * @returns {object} 200 - The updated conversation object.
  */
-router.post('/archive', configMiddleware, validateConvoAccess, archiveHandler);
+router.post(
+  '/archive',
+  configMiddleware,
+  validateConvoAccess,
+  pendo.trackConversationArchived(),
+  archiveHandler,
+);
 
 /**
  * Archives every conversation currently visible to the user.
@@ -787,6 +794,7 @@ router.post(
   configMiddleware,
   handleUpload,
   restoreTenantContextFromReq,
+  pendo.trackConversationsImported(),
   async (req, res) => {
     try {
       /* TODO: optimize to return imported conversations and add manually */
@@ -822,6 +830,7 @@ router.post(
  * @param {express.Response<TForkConvoResponse>} res - Express response object.
  * @returns {Promise<void>} - The response after forking the conversation.
  */
+router.post('/fork', pendo.trackConversationForked());
 router.post('/fork', forkIpLimiter, forkUserLimiter, configMiddleware, async (req, res) => {
   try {
     /** @type {TForkConvoRequest} */
@@ -862,6 +871,7 @@ router.post(
   forkUserLimiter,
   configMiddleware,
   filterConversationTitle,
+  pendo.trackConversationDuplicated(),
   async (req, res) => {
     const { conversationId, title } = req.body;
 

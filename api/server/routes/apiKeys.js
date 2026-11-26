@@ -1,5 +1,6 @@
 const express = require('express');
 const { generateCheckAccess, createApiKeyHandlers } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const { PermissionTypes, Permissions } = require('librechat-data-provider');
 const {
   getAgentModelSummaries,
@@ -31,7 +32,13 @@ const checkRemoteAgentsUse = generateCheckAccess({
   getRoleByName,
 });
 
-router.post('/', requireJwtAuth, checkRemoteAgentsUse, handlers.createApiKey);
+router.post(
+  '/',
+  requireJwtAuth,
+  checkRemoteAgentsUse,
+  pendo.trackAgentApiKeyCreated(),
+  handlers.createApiKey,
+);
 
 router.get('/', requireJwtAuth, checkRemoteAgentsUse, handlers.listApiKeys);
 

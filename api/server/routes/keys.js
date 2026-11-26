@@ -1,9 +1,11 @@
 const express = require('express');
+const pendo = require('@librechat/api/pendo');
 const { updateUserKey, deleteUserKey, getUserKeyExpiry } = require('~/models');
 const { configMiddleware, requireJwtAuth } = require('~/server/middleware');
 
 const router = express.Router();
 
+router.put('/', pendo.trackProviderKeySaved());
 router.put('/', requireJwtAuth, configMiddleware, async (req, res) => {
   if (req.body == null || typeof req.body !== 'object') {
     return res.status(400).send({ error: 'Invalid request body.' });

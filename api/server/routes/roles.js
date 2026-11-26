@@ -14,6 +14,7 @@ const {
   skillPermissionsSchema,
 } = require('librechat-data-provider');
 const { createRolePermissionsUpdateHandler } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const { hasCapability, requireCapability } = require('~/server/middleware/roles/capabilities');
 const { updateRoleByName, getRoleByName, recordAuditEntry } = require('~/models');
 const { requireJwtAuth } = require('~/server/middleware');
@@ -133,48 +134,88 @@ router.get('/:roleName', async (req, res) => {
  * PUT /api/roles/:roleName/prompts
  * Update prompt permissions for a specific role
  */
-router.put('/:roleName/prompts', manageRoles, createPermissionUpdateHandler('prompts'));
+router.put(
+  '/:roleName/prompts',
+  manageRoles,
+  pendo.trackRolePermissionsUpdated('prompts'),
+  createPermissionUpdateHandler('prompts'),
+);
 
 /**
  * PUT /api/roles/:roleName/agents
  * Update agent permissions for a specific role
  */
-router.put('/:roleName/agents', manageRoles, createPermissionUpdateHandler('agents'));
+router.put(
+  '/:roleName/agents',
+  manageRoles,
+  pendo.trackRolePermissionsUpdated('agents'),
+  createPermissionUpdateHandler('agents'),
+);
 
 /**
  * PUT /api/roles/:roleName/memories
  * Update memory permissions for a specific role
  */
-router.put('/:roleName/memories', manageRoles, createPermissionUpdateHandler('memories'));
+router.put(
+  '/:roleName/memories',
+  manageRoles,
+  pendo.trackRolePermissionsUpdated('memories'),
+  createPermissionUpdateHandler('memories'),
+);
 
 /**
  * PUT /api/roles/:roleName/people-picker
  * Update people picker permissions for a specific role
  */
-router.put('/:roleName/people-picker', manageRoles, createPermissionUpdateHandler('people-picker'));
+router.put(
+  '/:roleName/people-picker',
+  manageRoles,
+  pendo.trackRolePermissionsUpdated('people-picker'),
+  createPermissionUpdateHandler('people-picker'),
+);
 
 /**
  * PUT /api/roles/:roleName/mcp-servers
  * Update MCP servers permissions for a specific role
  */
-router.put('/:roleName/mcp-servers', manageRoles, createPermissionUpdateHandler('mcp-servers'));
+router.put(
+  '/:roleName/mcp-servers',
+  manageRoles,
+  pendo.trackRolePermissionsUpdated('mcp-servers'),
+  createPermissionUpdateHandler('mcp-servers'),
+);
 
 /**
  * PUT /api/roles/:roleName/marketplace
  * Update marketplace permissions for a specific role
  */
-router.put('/:roleName/marketplace', manageRoles, createPermissionUpdateHandler('marketplace'));
+router.put(
+  '/:roleName/marketplace',
+  manageRoles,
+  pendo.trackRolePermissionsUpdated('marketplace'),
+  createPermissionUpdateHandler('marketplace'),
+);
 
 /**
  * PUT /api/roles/:roleName/remote-agents
  * Update remote agents (API) permissions for a specific role
  */
-router.put('/:roleName/remote-agents', manageRoles, createPermissionUpdateHandler('remote-agents'));
+router.put(
+  '/:roleName/remote-agents',
+  manageRoles,
+  pendo.trackRolePermissionsUpdated('remote-agents'),
+  createPermissionUpdateHandler('remote-agents'),
+);
 
 /**
  * PUT /api/roles/:roleName/skills
  * Update skill permissions for a specific role
  */
-router.put('/:roleName/skills', manageRoles, createPermissionUpdateHandler('skills'));
+router.put(
+  '/:roleName/skills',
+  manageRoles,
+  pendo.trackRolePermissionsUpdated('skills'),
+  createPermissionUpdateHandler('skills'),
+);
 
 module.exports = router;

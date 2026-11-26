@@ -41,6 +41,7 @@ const {
   getOpenIDAppAccessToken,
   getOpenIDBearerAudiences,
 } = require('@librechat/api');
+const { PendoEvent, trackPendoEvent } = require('@librechat/api/pendo');
 const {
   findUser,
   findToken,
@@ -382,6 +383,7 @@ const verifyEmail = async (req) => {
 
   await deleteTokens(getEmailVerificationTokenDeleteQuery(emailVerificationData));
   logger.info(`[verifyEmail] Email verification successful [User ID: ${user._id}]`);
+  trackPendoEvent({ event: PendoEvent.emailVerified, visitorId: userId, accountId: getTenantId() });
   return { message: 'Email verification was successful', status: 'success' };
 };
 
@@ -470,6 +472,17 @@ const registerUser = async (user, additionalData = {}) => {
     } else {
       await updateUser(newUserId, { emailVerified: true });
     }
+
+    trackPendoEvent({
+      event: PendoEvent.accountRegistered,
+      visitorId: newUserId.toString(),
+      accountId: tenantId,
+      properties: {
+        provider: newUserData.provider,
+        role,
+        verification_required: emailEnabled && !newUser.emailVerified,
+      },
+    });
 
     /** `userCreated` separates this from the identical 200 returned when the email is
      * already in use, so a caller can act on an account having actually been created

@@ -6,6 +6,7 @@ const {
   generateCheckAccess,
   createSchedulesHandlers,
 } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const { requireJwtAuth, configMiddleware, messageIpLimiter } = require('~/server/middleware');
 const {
   getLimits,
@@ -106,7 +107,7 @@ router.delete('/:id/mcp-consent', consentHost.handlers.revoke);
 
 router.get('/', checkSchedulesAccess, handlers.listSchedules);
 router.get('/:id', checkSchedulesAccess, handlers.getSchedule);
-router.post('/', checkSchedulesCreate, handlers.createSchedule);
+router.post('/', checkSchedulesCreate, pendo.trackScheduleCreated(), handlers.createSchedule);
 router.patch('/:id', checkSchedulesCreate, handlers.updateSchedule);
 router.delete('/:id', checkSchedulesCreate, handlers.deleteSchedule);
 // Run-now mutates runtime state; gate it on CREATE like the UI does (not USE).
@@ -119,6 +120,7 @@ router.post(
   '/:id/run',
   ...(isEnabled(process.env.LIMIT_MESSAGE_IP) ? [messageIpLimiter] : []),
   checkSchedulesCreate,
+  pendo.trackScheduledRunStarted(),
   handlers.runScheduleNow,
 );
 

@@ -34,6 +34,7 @@ const {
   resolveMCPOAuthTarget,
   canAccessMCPOAuthFlow,
 } = require('@librechat/api');
+const pendo = require('@librechat/api/pendo');
 const {
   createMCPServerController,
   updateMCPServerController,
@@ -1149,7 +1150,13 @@ router.get('/servers', requireJwtAuth, checkMCPUsePermissions, getMCPServersList
  * @param {MCPServerCreateParams} req.body - The MCP server creation parameters.
  * @returns {MCPServer} 201 - Success response - application/json
  */
-router.post('/servers', requireJwtAuth, checkMCPCreate, createMCPServerController);
+router.post(
+  '/servers',
+  requireJwtAuth,
+  checkMCPCreate,
+  pendo.trackMCPServerAdded(),
+  createMCPServerController,
+);
 
 /**
  * Get single MCP server by ID
