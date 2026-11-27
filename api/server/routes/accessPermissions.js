@@ -27,6 +27,7 @@ const {
   configMiddleware,
 } = require('~/server/middleware');
 const { checkPeoplePickerAccess } = require('~/server/middleware/checkPeoplePickerAccess');
+const pendo = require('~/server/services/Pendo');
 const db = require('~/models');
 const { findMCPServerByObjectId, getSkillById } = db;
 
@@ -204,6 +205,7 @@ router.put(
   checkSharePublicAccess,
   rejectSharedLinkOwnerPermissionChanges,
   configMiddleware,
+  pendo.route('Sharing permissions updated'),
   updateResourcePermissions,
 );
 

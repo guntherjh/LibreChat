@@ -50,6 +50,7 @@ const {
   createMessageRequestValidation,
   prepareMessageRequestValidation,
 } = require('~/server/middleware');
+const pendo = require('~/server/services/Pendo');
 const db = require('~/models');
 
 const retentionStore = { stampForcedRetention: db.stampForcedRetention };
@@ -772,6 +773,7 @@ router.put(
   configMiddleware,
   requireFeedbackEnabled,
   filterFeedbackContent,
+  pendo.route('Feedback saved'),
   async (req, res) => {
     try {
       const { conversationId, messageId } = req.params;

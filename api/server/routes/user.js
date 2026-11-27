@@ -29,6 +29,7 @@ const {
 
 const settings = require('./settings');
 const { updateUserStatefulCodeEnvironment } = require('~/models');
+const pendo = require('~/server/services/Pendo');
 
 const router = express.Router();
 
@@ -42,7 +43,14 @@ router.patch('/preferences', requireJwtAuth, configMiddleware, updateUserPrefere
 router.get('/terms', requireJwtAuth, getTermsStatusController);
 router.post('/terms/accept', requireJwtAuth, acceptTermsController);
 router.post('/plugins', requireJwtAuth, updateUserPluginsController);
-router.delete('/delete', requireJwtAuth, canDeleteAccount, configMiddleware, deleteUserController);
+router.delete(
+  '/delete',
+  requireJwtAuth,
+  canDeleteAccount,
+  configMiddleware,
+  pendo.route('Account deleted'),
+  deleteUserController,
+);
 router.post(
   '/email/change',
   requireJwtAuth,

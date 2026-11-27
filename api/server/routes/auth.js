@@ -46,6 +46,7 @@ const { loginController } = require('~/server/controllers/auth/LoginController')
 const { findBalanceByUser, upsertBalanceFields } = require('~/models');
 const { getAppConfig } = require('~/server/services/Config');
 const middleware = require('~/server/middleware');
+const pendo = require('~/server/services/Pendo');
 
 const setBalanceConfig = createSetBalanceConfig({
   getAppConfig,
@@ -80,6 +81,7 @@ router.post(
   middleware.validateEmailLogin,
   ldapAuth ? middleware.requireLdapAuth : middleware.requireLocalAuth,
   setBalanceConfig,
+  pendo.route('Signed in', { method: ldapAuth ? 'ldap' : 'password' }),
   loginController,
 );
 router.post('/refresh', refreshController);
@@ -119,6 +121,7 @@ router.post(
   middleware.resetPasswordSubmissionLimiter,
   middleware.checkBan,
   middleware.validatePasswordReset,
+  pendo.route('Password reset completed'),
   resetPasswordController,
 );
 
@@ -160,6 +163,8 @@ router.post(
   middleware.twoFactorSetupLimiter,
   middleware.checkBan,
   requireTwoFactorSetupFinalizationToken,
+  pendo.route('Two-factor authentication enabled', { flow: 'required_setup' }),
+  pendo.route('Signed in', { method: 'two_factor_setup' }),
   finalize2FASetup,
 );
 router.post(
@@ -180,9 +185,16 @@ router.post(
   middleware.setTwoFactorTempUser,
   middleware.twoFactorTempLimiter,
   middleware.checkBan,
+  pendo.route('Signed in', { method: 'two_factor' }),
   verify2FAWithTempToken,
 );
-router.post('/2fa/confirm', middleware.requireJwtAuth, twoFactorManagementLimiter, confirm2FA);
+router.post(
+  '/2fa/confirm',
+  middleware.requireJwtAuth,
+  twoFactorManagementLimiter,
+  pendo.route('Two-factor authentication enabled', { flow: 'opt_in' }),
+  confirm2FA,
+);
 router.post(
   '/2fa/disable',
   middleware.requireJwtAuth,
@@ -215,6 +227,7 @@ router.post(
   middleware.checkBan,
   authenticatePasskey,
   setBalanceConfig,
+  pendo.route('Signed in', { method: 'passkey' }),
   loginController,
 );
 router.get('/passkey', middleware.requireJwtAuth, listPasskeys);

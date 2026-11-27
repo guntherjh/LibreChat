@@ -12,6 +12,7 @@ const {
 const { findAccessibleResources } = require('~/server/services/PermissionService');
 const { getAppConfig } = require('~/server/services/Config/app');
 const { requireJwtAuth } = require('~/server/middleware');
+const pendo = require('~/server/services/Pendo');
 
 const router = express.Router();
 
@@ -31,7 +32,13 @@ const checkRemoteAgentsUse = generateCheckAccess({
   getRoleByName,
 });
 
-router.post('/', requireJwtAuth, checkRemoteAgentsUse, handlers.createApiKey);
+router.post(
+  '/',
+  requireJwtAuth,
+  checkRemoteAgentsUse,
+  pendo.route('API key created'),
+  handlers.createApiKey,
+);
 
 router.get('/', requireJwtAuth, checkRemoteAgentsUse, handlers.listApiKeys);
 

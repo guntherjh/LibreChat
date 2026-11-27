@@ -3,6 +3,7 @@ import { configureSlackAppSchema } from 'librechat-data-provider';
 import { getTenantId, tenantStorage, TransactionUnavailableError } from '@librechat/data-schemas';
 import type { SlackWorkspaceStorage } from '@librechat/data-schemas';
 import type { Request, Response, RequestHandler } from 'express';
+import type { SlackWorkspace } from 'librechat-data-provider';
 import type { SlackWorkspaceService, SlackWorkspacePrincipal } from './workspaces';
 import { setOAuthCsrfCookie, validateOAuthCsrf, validateOAuthSession } from '~/oauth/csrf';
 import { SLACK_WORKSPACE_CALLBACK_PATH, slackPublicURL } from './workspaces';
@@ -24,6 +25,12 @@ const connectBody = z
   .object({ workspaceId: identifier.optional(), appId: appId.optional() })
   .strict();
 const pageQuery = z.object({ cursor: identifier.optional() }).strict();
+
+export interface SlackWorkspaceConnection {
+  userId: string;
+  tenantId?: string;
+  workspace: SlackWorkspace;
+}
 
 export interface SlackWorkspaceHandlers {
   apps: RequestHandler;
@@ -54,6 +61,8 @@ export function createSlackWorkspaceHandlers(deps: {
   canManage: (principal: SlackWorkspacePrincipal) => Promise<boolean>;
   clientBaseUrl: string;
   logError: (metadata: ReturnType<typeof getSafeErrorMetadata>) => void;
+  /** Called once Slack accepted an install and the workspace is stored. */
+  onConnected?: (connection: SlackWorkspaceConnection) => void;
 }): SlackWorkspaceHandlers {
   const browser =
     (
@@ -363,6 +372,11 @@ export function createSlackWorkspaceHandlers(deps: {
           fail(`slack_${result.error.code}`);
           return;
         }
+        deps.onConnected?.({
+          userId: flow.userId,
+          tenantId: flow.tenantId,
+          workspace: result.value,
+        });
         res.redirect(landing('/oauth/success', { serverName: 'Slack', flow: flowId }));
       } catch (error) {
         deps.logError(getSafeErrorMetadata(error));

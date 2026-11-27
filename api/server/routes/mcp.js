@@ -87,6 +87,7 @@ const {
 } = require('~/server/services/MCPAuthorizationFenceRetry');
 const { createOpenIDSessionTokenProvider } = require('~/server/services/OpenIDSessionRefresh');
 const { getLogStores } = require('~/cache');
+const pendo = require('~/server/services/Pendo');
 const db = require('~/models');
 
 const router = Router();
@@ -1149,7 +1150,13 @@ router.get('/servers', requireJwtAuth, checkMCPUsePermissions, getMCPServersList
  * @param {MCPServerCreateParams} req.body - The MCP server creation parameters.
  * @returns {MCPServer} 201 - Success response - application/json
  */
-router.post('/servers', requireJwtAuth, checkMCPCreate, createMCPServerController);
+router.post(
+  '/servers',
+  requireJwtAuth,
+  checkMCPCreate,
+  pendo.route('MCP server added'),
+  createMCPServerController,
+);
 
 /**
  * Get single MCP server by ID

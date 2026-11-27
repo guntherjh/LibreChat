@@ -59,6 +59,7 @@ const optionalJwtAuth = require('~/server/middleware/optionalJwtAuth');
 const requireJwtAuth = require('~/server/middleware/requireJwtAuth');
 const { getHeldCapabilities } = require('~/server/middleware/roles/capabilities');
 const configMiddleware = require('~/server/middleware/config/app');
+const pendo = require('~/server/services/Pendo');
 const { getAppConfig } = require('~/server/services/Config/app');
 const router = express.Router();
 const sharedLinkConfigMiddleware = createSharedLinkConfigMiddleware({ getAppConfig });
@@ -418,6 +419,7 @@ if (allowSharedLinks) {
     forkUserLimiter,
     canAccessSharedLink,
     sharedLinkConfigMiddleware,
+    pendo.route('Shared conversation continued'),
     async (req, res) => {
       try {
         const previewToolCalls = prepareResultToolCallPreviews(req, { getAppConfig });
@@ -633,6 +635,7 @@ router.post(
   requireJwtAuth,
   configMiddleware,
   checkSharedLinksAccess,
+  pendo.route('Shared link created'),
   async (req, res) => {
     try {
       const { targetMessageId, snapshotFiles: requestedSnapshotFiles } = req.body ?? {};
