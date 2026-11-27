@@ -87,7 +87,7 @@ export default function SkillFileEditor({ skillId, nodeId, fileName }: SkillFile
             aria-hidden="true"
           />
         </div>
-        <Button
+        <Button data-novus-id="skill-detail-edit-skill-files"
           type="button"
           variant={isDirty ? 'submit' : 'outline'}
           size="compact"

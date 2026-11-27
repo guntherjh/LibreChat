@@ -505,7 +505,7 @@ export default function AssistantPanel({
               endpoint={endpoint}
             />
             {/* Submit Button */}
-            <button
+            <button data-novus-id="global-build-an-openai-assistant"
               className="btn bg-surface-submit text-text-on-status hover:bg-surface-submit-hover focus-visible:ring-text-primary focus-visible:ring-offset-surface-primary flex w-full items-center justify-center px-4 py-2 font-semibold focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2"
               type="submit"
             >

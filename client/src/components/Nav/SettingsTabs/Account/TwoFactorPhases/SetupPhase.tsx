@@ -27,7 +27,7 @@ export const SetupPhase: React.FC<SetupPhaseProps> = ({ isGenerating, onGenerate
         <h3 className="text-text-primary mb-4 flex justify-center text-lg font-medium">
           {localize('com_ui_2fa_account_security')}
         </h3>
-        <Button
+        <Button data-novus-id="required-two-factor-setup-complete-required-two-factor-setup"
           variant="default"
           onClick={onGenerate}
           className="flex w-full"

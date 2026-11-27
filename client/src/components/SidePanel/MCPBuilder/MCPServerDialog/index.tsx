@@ -235,7 +235,7 @@ export default function MCPServerDialog({
             ) : null
           }
           buttons={
-            <Button
+            <Button data-novus-id="global-add-an-mcp-server"
               type="button"
               variant={isEditMode ? 'default' : 'submit'}
               onClick={onSubmit}

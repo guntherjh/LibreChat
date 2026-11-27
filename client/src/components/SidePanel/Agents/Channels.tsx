@@ -842,7 +842,7 @@ function OwnedChannels({ agentId, userId, tenantId, isAdmin = false }: ChannelsP
                     >
                       {localize('com_ui_cancel')}
                     </Button>
-                    <Button
+                    <Button data-novus-id="global-connect-an-agent-to-a-channel"
                       type="button"
                       disabled={
                         create.isLoading ||

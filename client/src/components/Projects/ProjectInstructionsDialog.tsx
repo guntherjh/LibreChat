@@ -196,7 +196,7 @@ export default function ProjectInstructionsDialog({
           </form>
         }
         buttons={
-          <Button
+          <Button data-novus-id="project-workspace-edit-project-instructions"
             type="submit"
             form={formId}
             variant="submit"

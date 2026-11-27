@@ -167,7 +167,7 @@ function Fork({
           <TooltipAnchor
             description={localize('com_ui_fork_open_menu')}
             render={
-              <Button
+              <Button data-novus-id="chat-fork-a-conversation-from-a-message"
                 variant={isLast ? 'message-hover' : 'message-hover-reveal'}
                 data-hover-active={isActive || undefined}
                 onClick={(e) => {

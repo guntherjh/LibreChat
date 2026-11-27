@@ -589,7 +589,7 @@ export default function LangfuseConnection() {
 
           <div className="flex min-h-9 items-center justify-end gap-2">
             {isEditing ? (
-              <Button variant="submit" disabled={!canSubmit || busy} onClick={handleSave}>
+              <Button data-novus-id="global-connect-langfuse" variant="submit" disabled={!canSubmit || busy} onClick={handleSave}>
                 {testMutation.isLoading ? (
                   <span className="flex items-center gap-2">
                     <Spinner className="h-4 w-4" />
@@ -644,7 +644,7 @@ export default function LangfuseConnection() {
           {connectionStatus.promptSync.enabled && (
             <div className="flex flex-wrap items-center gap-2">
               {canManagePrompts && (
-                <Button variant="submit" size="sm" disabled={busy} onClick={handleSyncPrompts}>
+                <Button data-novus-id="global-sync-prompts-from-langfuse" variant="submit" size="sm" disabled={busy} onClick={handleSyncPrompts}>
                   {syncPromptsMutation.isLoading ? (
                     <span className="flex items-center gap-2">
                       <Spinner className="h-4 w-4" />

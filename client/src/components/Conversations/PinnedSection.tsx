@@ -210,7 +210,7 @@ const DraggablePinnedRow = ({
   };
 
   return (
-    <div
+    <div data-novus-id="global-reorder-pinned-items"
       ref={ref}
       className={isDragging ? 'opacity-0' : undefined}
       data-handler-id={handlerId}

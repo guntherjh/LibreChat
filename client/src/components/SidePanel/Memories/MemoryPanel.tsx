@@ -216,7 +216,7 @@ export default function MemoryPanel() {
 
             {/* Memory Toggle */}
             {hasOptOutAccess && (
-              <Button
+              <Button data-novus-id="global-turn-memory-use-on-or-off"
                 size="sm"
                 variant="outline"
                 className={cn(

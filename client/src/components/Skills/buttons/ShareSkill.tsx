@@ -40,7 +40,7 @@ function ShareSkill({ skill, disabled }: ShareSkillProps) {
         description={localize('com_ui_share')}
         side="bottom"
         render={
-          <Button
+          <Button data-novus-id="skill-detail-share-a-skill"
             variant="outline"
             size="icon"
             className="border-border-medium size-9"

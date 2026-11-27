@@ -60,7 +60,7 @@ export const DisablePhase: React.FC<DisablePhaseProps> = ({ onDisable, isDisabli
           </InputOTP>
         )}
       </div>
-      <Button
+      <Button data-novus-id="global-turn-off-two-factor-authentication"
         variant="destructive"
         onClick={() => onDisable(token, useBackup)}
         disabled={isDisabling || !(useBackup ? isBackupCode(token) : token.length === 6)}

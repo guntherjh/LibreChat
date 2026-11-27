@@ -378,7 +378,7 @@ function OwnedWorkspaces({ principalKey }: { principalKey: string }) {
           </h3>
           <p className="text-text-secondary mt-0.5 text-xs">{description}</p>
         </div>
-        <Button
+        <Button data-novus-id="global-connect-a-slack-workspace"
           ref={manageRef}
           variant="outline"
           disabled={status.isLoading}
@@ -547,7 +547,7 @@ function OwnedWorkspaces({ principalKey }: { principalKey: string }) {
             else headingRef.current?.focus();
           }}
           selection={
-            <Button
+            <Button data-novus-id="global-reconnect-or-disconnect-a-slack-workspace"
               type="button"
               variant="destructive"
               disabled={busy || !confirm || first?.canManage !== true}

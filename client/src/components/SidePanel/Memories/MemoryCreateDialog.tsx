@@ -159,7 +159,7 @@ export default function MemoryCreateDialog({
           </div>
         }
         buttons={
-          <Button
+          <Button data-novus-id="global-create-a-memory"
             type="button"
             variant="submit"
             onClick={handleSave}

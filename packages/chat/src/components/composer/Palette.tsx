@@ -1049,7 +1049,7 @@ function Palette({
       const modes = isEntry ? row.entry.modes : undefined;
 
       return (
-        <div
+        <div data-novus-id="chat-turn-on-tools-mcp-servers-or-skills-for-a-message"
           key={row.key}
           data-row-key={row.key}
           style={style}

@@ -110,7 +110,7 @@ export function DeleteConversationDialog({
         <OGDialogClose asChild>
           <Button variant="outline">{localize('com_ui_cancel')}</Button>
         </OGDialogClose>
-        <Button variant="destructive" onClick={confirmDelete} disabled={deleteMutation.isLoading}>
+        <Button data-novus-id="global-delete-a-conversation" variant="destructive" onClick={confirmDelete} disabled={deleteMutation.isLoading}>
           {deleteMutation.isLoading ? <Spinner /> : localize('com_ui_delete')}
         </Button>
       </div>

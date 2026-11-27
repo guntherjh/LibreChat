@@ -451,7 +451,7 @@ export default function ProjectWorkspace() {
             <ArrowLeft className="size-4 rtl:-scale-x-100" aria-hidden="true" />
             {localize('com_ui_all_projects')}
           </Button>
-          <Button
+          <Button data-novus-id="project-workspace-start-a-chat-in-a-project"
             type="button"
             size="sm"
             shape="round"

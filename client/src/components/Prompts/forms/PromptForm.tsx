@@ -82,7 +82,7 @@ const VersionsPanel = React.memo(
       <div className="flex h-full w-full flex-col overflow-hidden">
         {canEdit && (
           <div className="shrink-0 px-4 py-2">
-            <Button
+            <Button data-novus-id="prompt-editor-set-the-production-version"
               variant="submit"
               size="sm"
               aria-label={localize('com_ui_make_production')}
@@ -568,7 +568,7 @@ const PromptForm = ({ promptId: promptIdProp }: { promptId?: string }) => {
 
   return (
     <FormProvider {...methods}>
-      <form className="flex w-full" onSubmit={handleSubmit((data) => onSave(data.prompt))}>
+      <form data-novus-id="prompt-editor-save-a-new-prompt-version" className="flex w-full" onSubmit={handleSubmit((data) => onSave(data.prompt))}>
         <h1 className="sr-only">{localize('com_ui_edit_prompt_page')}</h1>
         <div className="relative w-full overflow-hidden">
           <div

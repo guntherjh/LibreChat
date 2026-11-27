@@ -1081,7 +1081,7 @@ export default function AgentPanel() {
                   <Plus className="me-1 h-4 w-4" aria-hidden="true" />
                   {localize('com_ui_create_new_agent')}
                 </Button>
-                <Button
+                <Button data-novus-id="global-select-an-agent-to-chat-with"
                   variant="submit"
                   disabled={isEphemeralAgent(agent_id) || agentQuery.isInitialLoading}
                   onClick={(e) => {

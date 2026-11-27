@@ -58,7 +58,7 @@ const SharePrompt = React.memo(
           description={localize('com_ui_share')}
           side="bottom"
           render={
-            <Button
+            <Button data-novus-id="prompt-editor-share-a-prompt"
               variant="outline"
               size="icon"
               className="border-border-medium"

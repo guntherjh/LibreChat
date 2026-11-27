@@ -191,7 +191,7 @@ function Grant({
                 disabled={busy}
                 onChange={(event) => setHours(Number(event.target.value))}
               />
-              <Button
+              <Button data-novus-id="global-grant-mcp-tool-permissions"
                 onClick={commit}
                 disabled={
                   busy ||

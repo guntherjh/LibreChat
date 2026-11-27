@@ -139,7 +139,7 @@ export default function ChangeEmail() {
               {localize('com_ui_cancel')}
             </Button>
           </OGDialogClose>
-          <Button
+          <Button data-novus-id="global-change-email-address"
             type="submit"
             form="change-email-form"
             variant="submit"

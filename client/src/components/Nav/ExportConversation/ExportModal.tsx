@@ -189,7 +189,7 @@ export default function ExportModal({
         }
         buttons={
           <>
-            <Button onClick={exportConversation} variant="submit">
+            <Button data-novus-id="chat-export-a-conversation" onClick={exportConversation} variant="submit">
               {localize('com_endpoint_export')}
             </Button>
           </>

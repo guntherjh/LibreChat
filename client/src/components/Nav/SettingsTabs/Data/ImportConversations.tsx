@@ -109,7 +109,7 @@ function ImportConversations() {
   return (
     <div className="flex items-center justify-between">
       <Label id="import-conversation-label">{localize('com_ui_import_conversation_info')}</Label>
-      <Button
+      <Button data-novus-id="global-import-conversations"
         variant="outline"
         onClick={handleImportClick}
         onKeyDown={handleKeyDown}

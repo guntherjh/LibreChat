@@ -327,7 +327,7 @@ function Avatar() {
                 >
                   {localize('com_ui_cancel')}
                 </Button>
-                <Button
+                <Button data-novus-id="global-upload-a-profile-picture"
                   variant="submit"
                   type="button"
                   className={cn('flex-1', isUploading ? 'cursor-not-allowed opacity-90' : '')}

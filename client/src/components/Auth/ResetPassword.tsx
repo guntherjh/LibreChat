@@ -157,7 +157,7 @@ function ResetPassword() {
         )}
       </div>
       <div className="mt-6">
-        <Button
+        <Button data-novus-id="reset-password-reset-password"
           type="submit"
           aria-label={localize('com_auth_submit_registration')}
           disabled={!!errors.password || !!errors.confirm_password || isSubmitting}
