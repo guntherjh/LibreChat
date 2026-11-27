@@ -1,4 +1,5 @@
 const express = require('express');
+const { middleware } = require('pendo-server-sdk');
 const { uaParser, checkBan, requireJwtAuth, configMiddleware } = require('~/server/middleware');
 const router = express.Router();
 
@@ -11,6 +12,16 @@ router.use(requireJwtAuth);
 router.use(checkBan);
 router.use(uaParser);
 router.use(configMiddleware);
+/* Pendo Agent Analytics identity for each chat turn, after `requireJwtAuth` sets `req.user`. */
+router.use(
+  ['/v1/chat', '/v2/chat'],
+  middleware((req) => ({
+    visitorId: req.user?.id, // TODO: map to the visitor id your Pendo web snippet uses
+    accountId: req.user?.tenantId, // TODO: map to the Pendo account id
+    // TODO: a new conversation sends no `conversationId`; the chat controller generates it
+    conversationId: req.body?.conversationId ?? undefined,
+  })),
+);
 router.use('/v1/', v1);
 router.use('/v1/chat', chatV1);
 router.use('/v2/', v2);

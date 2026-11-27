@@ -1,6 +1,7 @@
 const { v4 } = require('uuid');
 const { sleep } = require('@librechat/agents');
 const { logger } = require('@librechat/data-schemas');
+const { traceLlm, closeTurn } = require('pendo-server-sdk');
 const {
   sendEvent,
   countTokens,
@@ -722,7 +723,13 @@ const chatV1 = async (req, res) => {
     }
     assistantRun.throwIfStopped();
     setHeaders(req, res, () => {});
-    await processRun();
+    /* The OpenAI patch from `pendo-server-sdk` covers `chat.completions` only, so the
+     * Assistants run is traced here as the turn's LLM call. */
+    const traceRun = traceLlm('assistants.run', async () => {
+      await processRun();
+      return response;
+    });
+    await traceRun({ prompt: text, conversationId });
     logger.debug('[/assistants/chat/] response', {
       run: response.run,
       steps: response.steps,
@@ -810,6 +817,7 @@ const chatV1 = async (req, res) => {
   } catch (error) {
     await handleError(error);
   } finally {
+    closeTurn(conversationId);
     await balanceReservations.release();
   }
 };
