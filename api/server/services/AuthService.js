@@ -61,6 +61,7 @@ const {
 const { registerSchema } = require('~/strategies/validators');
 const { getAppConfig } = require('~/server/services/Config');
 const { sendEmail } = require('~/server/utils');
+const pendo = require('~/server/services/Pendo');
 
 const domains = {
   client: process.env.DOMAIN_CLIENT,
@@ -381,6 +382,7 @@ const verifyEmail = async (req) => {
   }
 
   await deleteTokens(getEmailVerificationTokenDeleteQuery(emailVerificationData));
+  pendo.track({ event: 'Email verified', user: updatedUser });
   logger.info(`[verifyEmail] Email verification successful [User ID: ${user._id}]`);
   return { message: 'Email verification was successful', status: 'success' };
 };
@@ -470,6 +472,17 @@ const registerUser = async (user, additionalData = {}) => {
     } else {
       await updateUser(newUserId, { emailVerified: true });
     }
+
+    pendo.track({
+      event: 'Account registered',
+      user: newUser,
+      tenantId,
+      properties: {
+        provider: newUserData.provider,
+        role,
+        verification_required: emailEnabled && !newUser.emailVerified,
+      },
+    });
 
     /** `userCreated` separates this from the identical 200 returned when the email is
      * already in use, so a caller can act on an account having actually been created

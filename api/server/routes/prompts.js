@@ -21,6 +21,7 @@ const {
 const { getEffectivePermissions } = require('~/server/services/PermissionService');
 const { promptService } = require('~/server/services/Prompts');
 const { getLogStores } = require('~/cache');
+const pendo = require('~/server/services/Pendo');
 const db = require('~/models');
 
 const { getRoleByName } = db;
@@ -72,7 +73,13 @@ router.get(
 router.get('/all', configMiddleware, handlers.listAllPromptGroups);
 router.get('/groups', configMiddleware, handlers.listPromptGroups);
 
-router.post('/', checkPromptCreate, configMiddleware, handlers.createPromptGroup);
+router.post(
+  '/',
+  checkPromptCreate,
+  configMiddleware,
+  pendo.route('Prompt created'),
+  handlers.createPromptGroup,
+);
 router.post(
   '/groups/:groupId/prompts',
   checkPromptAccess,

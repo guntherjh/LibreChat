@@ -14,6 +14,7 @@ const {
   isUserDeleting,
 } = require('~/server/services/Schedules');
 const { resolveAgentFireAccess } = require('~/server/services/Schedules/access');
+const pendo = require('~/server/services/Pendo');
 const methods = require('~/models');
 
 const { getRoleByName } = methods;
@@ -106,7 +107,7 @@ router.delete('/:id/mcp-consent', consentHost.handlers.revoke);
 
 router.get('/', checkSchedulesAccess, handlers.listSchedules);
 router.get('/:id', checkSchedulesAccess, handlers.getSchedule);
-router.post('/', checkSchedulesCreate, handlers.createSchedule);
+router.post('/', checkSchedulesCreate, pendo.route('Schedule created'), handlers.createSchedule);
 router.patch('/:id', checkSchedulesCreate, handlers.updateSchedule);
 router.delete('/:id', checkSchedulesCreate, handlers.deleteSchedule);
 // Run-now mutates runtime state; gate it on CREATE like the UI does (not USE).
@@ -119,6 +120,7 @@ router.post(
   '/:id/run',
   ...(isEnabled(process.env.LIMIT_MESSAGE_IP) ? [messageIpLimiter] : []),
   checkSchedulesCreate,
+  pendo.route('Scheduled run started'),
   handlers.runScheduleNow,
 );
 

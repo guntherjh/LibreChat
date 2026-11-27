@@ -1,6 +1,7 @@
 const express = require('express');
 const { requireJwtAuth, requireSameOrigin } = require('~/server/middleware');
 const { identityHandlers: handlers } = require('~/server/services/Channels');
+const pendo = require('~/server/services/Pendo');
 
 const router = express.Router();
 // Service handlers apply the channel service guard, which establishes the exact tenant/channel.
@@ -9,7 +10,13 @@ router.post('/service/:channelId/identity/:externalUserId/ticket', handlers.issu
 router.post('/service/:channelId/identity/:externalUserId/confirm', handlers.confirm);
 router.post('/service/:channelId/identity/:externalUserId/reply', handlers.reply);
 router.post('/links/preview', requireJwtAuth, requireSameOrigin, handlers.preview);
-router.post('/links/accept', requireJwtAuth, requireSameOrigin, handlers.accept);
+router.post(
+  '/links/accept',
+  requireJwtAuth,
+  requireSameOrigin,
+  pendo.route('Channel identity linked'),
+  handlers.accept,
+);
 router.get('/links', requireJwtAuth, handlers.list);
 router.delete('/links/:linkId', requireJwtAuth, requireSameOrigin, handlers.revoke);
 

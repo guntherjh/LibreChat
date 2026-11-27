@@ -2,6 +2,7 @@ const express = require('express');
 const { PermissionBits } = require('librechat-data-provider');
 const { canAccessAgentResource, requireSameOrigin } = require('~/server/middleware');
 const handlers = require('~/server/services/Channels');
+const pendo = require('~/server/services/Pendo');
 const workspaceBindings = require('~/server/services/SlackWorkspaceBindings');
 const { checkRemoteAgentsFeature } = require('./middleware');
 
@@ -14,7 +15,7 @@ router.use(
   }),
 );
 router.get('/', handlers.list);
-router.post('/', handlers.create);
+router.post('/', pendo.route('Agent channel created'), handlers.create);
 router.post('/workspace-connections', requireSameOrigin, workspaceBindings.create);
 router.get('/:channelId/workspace-routes', workspaceBindings.read);
 router.post('/:channelId/workspace-routes', requireSameOrigin, workspaceBindings.assign);

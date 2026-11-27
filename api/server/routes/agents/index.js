@@ -78,6 +78,7 @@ const {
   submitBackgroundResponseReview,
   cancelOwnerBackgroundResponse,
 } = require('~/server/services/Responses');
+const pendo = require('~/server/services/Pendo');
 const management = require('./management');
 const conversations = require('./conversations');
 const skills = require('./skills');
@@ -192,6 +193,7 @@ router.post(
   chatConfigMiddleware,
   ...(isEnabled(LIMIT_MESSAGE_IP) ? [messageIpLimiter] : []),
   ...(isEnabled(LIMIT_MESSAGE_USER) ? [messageUserLimiter] : []),
+  pendo.route('Response review decision submitted'),
   submitBackgroundResponseReview,
 );
 router.post(

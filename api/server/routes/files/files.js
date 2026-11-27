@@ -57,6 +57,7 @@ const { checkPermission } = require('~/server/services/PermissionService');
 const { cleanFileName, getContentDisposition } = require('~/server/utils/files');
 const { Readable } = require('stream');
 const { getLogStores } = require('~/cache');
+const pendo = require('~/server/services/Pendo');
 const db = require('~/models');
 
 const router = express.Router();
@@ -955,7 +956,7 @@ const handleFileUpload = async (req, res) => {
   }
 };
 
-router.post('/', handleFileUpload);
+router.post('/', pendo.route('File uploaded'), handleFileUpload);
 
 module.exports = router;
 module.exports.handleFileUpload = handleFileUpload;

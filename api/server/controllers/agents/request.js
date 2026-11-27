@@ -80,6 +80,7 @@ const {
   cleanupMCPRequestContextForReq,
 } = require('~/server/services/MCPRequestContext');
 const { logViolation } = require('~/cache');
+const pendo = require('~/server/services/Pendo');
 const { recordScheduleOutcome, isScheduleLive } = require('~/server/services/Schedules');
 const {
   saveMessage,
@@ -3302,6 +3303,19 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
             terminalOutcome = 'aborted';
           }
           startupTelemetry?.end(terminalOutcome);
+          if (!publication.persistenceFailed && !responseIsUnfinished) {
+            pendo.track({
+              event: 'AI response delivered',
+              user: req.user,
+              properties: {
+                endpoint: endpointOption?.endpoint,
+                model: getEndpointResponseModel(endpointOption),
+                is_regenerate: isRegenerate === true,
+                is_continued: isContinued === true,
+                is_scheduled: isScheduledFire,
+              },
+            });
+          }
         } catch (terminalError) {
           /** A failure while constructing the payload happened after this
            * controller's terminal CAS but before the manager could durably

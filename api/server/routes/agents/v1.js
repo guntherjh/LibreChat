@@ -7,6 +7,7 @@ const {
   canAccessAgentResource,
 } = require('~/server/middleware');
 const v1 = require('~/server/controllers/agents/v1');
+const pendo = require('~/server/services/Pendo');
 const { getRoleByName } = require('~/models');
 const actions = require('./actions');
 const tools = require('./tools');
@@ -51,7 +52,13 @@ router.get('/handoff-targets', checkAgentAccess, strictConfigMiddleware, listMod
  * @param {AgentCreateParams} req.body - The agent creation parameters.
  * @returns {Agent} 201 - Success response - application/json
  */
-router.post('/', checkAgentCreate, strictConfigMiddleware, v1.createAgent);
+router.post(
+  '/',
+  checkAgentCreate,
+  strictConfigMiddleware,
+  pendo.route('Agent created'),
+  v1.createAgent,
+);
 
 /**
  * Retrieves basic agent information (VIEW permission required).

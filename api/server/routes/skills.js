@@ -34,6 +34,7 @@ const { maybeRunGitHubSkillSyncForRequest } = require('~/server/services/Skills/
 const { deleteSkillForLegacy } = require('~/server/services/Skills/deletion');
 const configMiddleware = require('~/server/middleware/config/app');
 const { getFileStrategy } = require('~/server/utils/getFileStrategy');
+const pendo = require('~/server/services/Pendo');
 
 const router = express.Router();
 const reserveSkillBlobForConfig = createSkillBlobReserver({
@@ -178,11 +179,17 @@ router.post(
   fileUploadUserLimiter,
   skillUpload,
   restoreTenantContextFromReq,
+  pendo.route('Skill created', { source: 'import' }),
   importHandler,
 );
 
 router.get('/', maybeStartRequestSkillSync, handlers.list);
-router.post('/', checkSkillCreate, handlers.create);
+router.post(
+  '/',
+  checkSkillCreate,
+  pendo.route('Skill created', { source: 'manual' }),
+  handlers.create,
+);
 
 router.get(
   '/:id',

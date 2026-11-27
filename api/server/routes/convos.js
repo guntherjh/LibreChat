@@ -75,6 +75,7 @@ const {
   pendingBackgroundToolCompletions,
 } = require('~/server/services/Endpoints/agents/backgroundCompletion');
 const getLogStores = require('~/cache/getLogStores');
+const pendo = require('~/server/services/Pendo');
 const db = require('~/models');
 
 const assistantClients = {
@@ -787,6 +788,7 @@ router.post(
   configMiddleware,
   handleUpload,
   restoreTenantContextFromReq,
+  pendo.route('Conversations imported'),
   async (req, res) => {
     try {
       /* TODO: optimize to return imported conversations and add manually */
@@ -822,39 +824,46 @@ router.post(
  * @param {express.Response<TForkConvoResponse>} res - Express response object.
  * @returns {Promise<void>} - The response after forking the conversation.
  */
-router.post('/fork', forkIpLimiter, forkUserLimiter, configMiddleware, async (req, res) => {
-  try {
-    /** @type {TForkConvoRequest} */
-    const { conversationId, messageId, option, splitAtTarget, latestMessageId, excludeFiles } =
-      req.body;
-    const result = await forkConversation({
-      requestUserId: req.user.id,
-      originalConvoId: conversationId,
-      targetMessageId: messageId,
-      latestMessageId,
-      records: true,
-      splitAtTarget,
-      option,
-      excludeFiles: excludeFiles === true,
-      interfaceConfig: req.config?.interfaceConfig,
-      filters: req.config?.filters,
-      ...(req.config?.messageFilter?.pii == null
-        ? {}
-        : { legacyPii: req.config.messageFilter.pii }),
-    });
+router.post(
+  '/fork',
+  forkIpLimiter,
+  forkUserLimiter,
+  configMiddleware,
+  pendo.route('Conversation forked'),
+  async (req, res) => {
+    try {
+      /** @type {TForkConvoRequest} */
+      const { conversationId, messageId, option, splitAtTarget, latestMessageId, excludeFiles } =
+        req.body;
+      const result = await forkConversation({
+        requestUserId: req.user.id,
+        originalConvoId: conversationId,
+        targetMessageId: messageId,
+        latestMessageId,
+        records: true,
+        splitAtTarget,
+        option,
+        excludeFiles: excludeFiles === true,
+        interfaceConfig: req.config?.interfaceConfig,
+        filters: req.config?.filters,
+        ...(req.config?.messageFilter?.pii == null
+          ? {}
+          : { legacyPii: req.config.messageFilter.pii }),
+      });
 
-    res.json(withToolCallPreviews(req, result));
-  } catch (error) {
-    if (isContentFilterError(error)) {
-      return res.status(error.statusCode).json(error.body);
+      res.json(withToolCallPreviews(req, result));
+    } catch (error) {
+      if (isContentFilterError(error)) {
+        return res.status(error.statusCode).json(error.body);
+      }
+      if (isConversationImportError(error)) {
+        return res.status(error.statusCode).json(error.body);
+      }
+      logger.error('Error forking conversation:', error);
+      res.status(500).send('Error forking conversation');
     }
-    if (isConversationImportError(error)) {
-      return res.status(error.statusCode).json(error.body);
-    }
-    logger.error('Error forking conversation:', error);
-    res.status(500).send('Error forking conversation');
-  }
-});
+  },
+);
 
 router.post(
   '/duplicate',

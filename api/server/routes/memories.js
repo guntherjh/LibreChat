@@ -31,6 +31,7 @@ const {
   getAgents,
 } = require('~/models');
 const { requireJwtAuth, configMiddleware } = require('~/server/middleware');
+const pendo = require('~/server/services/Pendo');
 
 const router = express.Router();
 
@@ -177,7 +178,7 @@ router.get('/', checkMemoryRead, configMiddleware, async (req, res) => {
  * Body: { key: string, value: string }
  * Returns 201 and { created: true, memory: <createdDoc> } when successful.
  */
-router.post('/', createMemoryMiddleware, async (req, res) => {
+router.post('/', createMemoryMiddleware, pendo.route('Memory saved'), async (req, res) => {
   const { key, value } = req.body;
   const agentId = getMemoryAgentIdParam(req.body.agentId);
 
