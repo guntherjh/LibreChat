@@ -323,6 +323,8 @@ export type TUser = {
   avatar: string;
   role: string;
   provider: string;
+  emailVerified?: boolean;
+  termsAccepted?: boolean;
   tenantId?: string;
   plugins?: string[];
   twoFactorEnabled?: boolean;
