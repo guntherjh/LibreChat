@@ -1,6 +1,17 @@
 require('../config/credentials');
 
 const telemetry = require('./telemetry');
+const { init, shutdown } = require('pendo-server-sdk');
+
+/* Pendo Agent Analytics for the Assistants chat agent. Initialised after `./telemetry` so it
+ * attaches to the OpenTelemetry provider registered there instead of registering its own. */
+init({
+  apiKey: '8daadafd-8174-47cf-a77c-abe7e912010c',
+  agentId: 'hk5sm1zu_gYEt-6td-53pO7-ssM',
+  endpoint: 'https://app.pendo-security.pendo-dev.com',
+  autoPatch: true,
+});
+
 const fs = require('fs');
 const path = require('path');
 require('module-alias')({ base: path.resolve(__dirname, '..') });
@@ -130,6 +141,10 @@ configureFileConfigRegexEngine();
 
 /** Reject messageFilter PII patterns the RE2 runtime engine cannot compile, at config load. */
 configureMessageFilterRegexValidator();
+
+/* Flush buffered Pendo Agent Analytics events on SIGINT and SIGTERM, before the OpenTelemetry
+ * exporters (priority -100) shut down. */
+registerShutdownTask('pendo agent analytics', shutdown, { priority: -50 });
 
 const { PORT, HOST, ALLOW_SOCIAL_LOGIN, DISABLE_COMPRESSION, TRUST_PROXY } = process.env ?? {};
 
