@@ -39,6 +39,8 @@ import {
 import {
   useGetRole,
   useGetUserQuery,
+  useGetUserBalance,
+  useUserTermsQuery,
   endPullRequestSession,
   useLoginUserMutation,
   clearTitleGenerationState,
@@ -49,6 +51,7 @@ import {
 import { resetChatFilterSessionAtom } from '~/components/Conversations/chatFilters';
 import { TAuthConfig, TUserContext, TAuthContext, TResError } from '~/common';
 import { resetFacetsAtom } from '~/components/Conversations/facets';
+import { identifyPendo, clearPendoSession } from '~/lib/pendo';
 import { resetMCPStateAtom } from '~/store/mcp';
 import useTimeout from './useTimeout';
 import store from '~/store';
@@ -273,6 +276,7 @@ const AuthContextProvider = ({
     (redirect?: string) => {
       clearPostLoginRedirect();
       clearTwoFactorSetupToken();
+      clearPendoSession();
       if (redirect) {
         logoutRedirectRef.current = redirect;
       }
@@ -317,6 +321,16 @@ const AuthContextProvider = ({
   }, [setUser]);
 
   const userQuery = useGetUserQuery({ enabled: !!(token ?? '') });
+  /** Cache reads only: the surfaces that show balance and terms own their fetching. */
+  const { data: balance } = useGetUserBalance({ enabled: false });
+  const { data: terms } = useUserTermsQuery({ enabled: false });
+
+  useEffect(() => {
+    if (!isAuthenticated || user == null) {
+      return;
+    }
+    identifyPendo(user, balance, terms);
+  }, [isAuthenticated, user, balance, terms]);
 
   const login = useCallback(
     (data: t.TLoginUser) => {
