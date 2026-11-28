@@ -222,7 +222,7 @@ const EditPresetDialog = ({
           <Button variant="outline" onClick={exportPreset} disabled={!hasTarget}>
             {localize('com_endpoint_export')}
           </Button>
-          <Button variant="submit" onClick={submitPreset} disabled={!hasTarget}>
+          <Button data-novus-id="chat-edit-a-preset" variant="submit" onClick={submitPreset} disabled={!hasTarget}>
             {localize('com_ui_save')}
           </Button>
         </div>

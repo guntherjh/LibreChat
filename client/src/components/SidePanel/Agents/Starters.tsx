@@ -63,7 +63,7 @@ function StartersField({
           side="top"
           description={addLabel}
           render={
-            <Button
+            <Button data-novus-id="chat-add-conversation-starters-to-an-agent"
               type="button"
               variant="ghost"
               size="icon-sm"

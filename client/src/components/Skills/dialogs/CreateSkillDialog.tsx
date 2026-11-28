@@ -259,7 +259,7 @@ export default function CreateSkillDialog({
             <Button type="button" variant="outline" onClick={handleClose}>
               {localize('com_ui_cancel')}
             </Button>
-            <Button
+            <Button data-novus-id="new-skill-write-a-new-skill"
               type="submit"
               variant="submit"
               disabled={submitDisabled}

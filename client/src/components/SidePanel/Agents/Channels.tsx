@@ -842,7 +842,7 @@ function OwnedChannels({ agentId, userId, tenantId, isAdmin = false }: ChannelsP
                     >
                       {localize('com_ui_cancel')}
                     </Button>
-                    <Button
+                    <Button data-novus-id="chat-connect-an-agent-to-slack"
                       type="button"
                       disabled={
                         create.isLoading ||

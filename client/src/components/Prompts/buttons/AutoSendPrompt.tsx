@@ -20,7 +20,7 @@ export default function AutoSendPrompt({
   };
 
   return (
-    <Button
+    <Button data-novus-id="chat-toggle-auto-send-prompts"
       size="sm"
       variant="outline"
       onClick={() => handleCheckedChange(!autoSendPrompts)}

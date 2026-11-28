@@ -86,7 +86,7 @@ export default function SkillDetail({ skill, onEdit, onDelete }: SkillDetailProp
               description={localize('com_ui_edit')}
               side="bottom"
               render={
-                <Button
+                <Button data-novus-id="edit-skill-edit-a-skill-2"
                   variant="outline"
                   size="icon"
                   className="border-border-medium size-9"

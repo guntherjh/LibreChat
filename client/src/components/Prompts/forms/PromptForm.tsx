@@ -82,7 +82,7 @@ const VersionsPanel = React.memo(
       <div className="flex h-full w-full flex-col overflow-hidden">
         {canEdit && (
           <div className="shrink-0 px-4 py-2">
-            <Button
+            <Button data-novus-id="prompt-detail-set-a-production-prompt-version"
               variant="submit"
               size="sm"
               aria-label={localize('com_ui_make_production')}

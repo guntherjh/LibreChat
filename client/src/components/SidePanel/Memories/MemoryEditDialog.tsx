@@ -234,7 +234,7 @@ export default function MemoryEditDialog({
         }
         buttons={
           hasUpdateAccess ? (
-            <Button
+            <Button data-novus-id="chat-edit-a-memory"
               type="button"
               variant="submit"
               onClick={handleSave}

@@ -191,7 +191,7 @@ function PasskeyItem({
             <TooltipAnchor
               description={localize('com_ui_save')}
               render={
-                <Button
+                <Button data-novus-id="global-rename-a-passkey"
                   variant="ghost"
                   size="icon"
                   className="shrink-0"

@@ -61,7 +61,7 @@ const PromptTextCard = ({ mainText }: PromptTextCardProps) => {
         <TooltipAnchor
           description={isCopied ? localize('com_ui_copied') : localize('com_ui_copy')}
           render={
-            <Button
+            <Button data-novus-id="prompt-detail-copy-prompt-text"
               size="icon"
               variant="ghost"
               onClick={handleCopy}

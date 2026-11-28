@@ -304,7 +304,7 @@ const EditMessage = ({
             >
               {localize('com_ui_cancel')}
             </Button>
-            <Button
+            <Button data-novus-id="chat-save-an-edited-message"
               ref={saveButtonRef}
               size="sm"
               variant="outline"

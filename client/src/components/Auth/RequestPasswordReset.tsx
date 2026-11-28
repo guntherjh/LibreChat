@@ -137,7 +137,7 @@ function RequestPasswordReset() {
         )}
       </div>
       <div className="space-y-4">
-        <Button
+        <Button data-novus-id="forgot-password-request-a-password-reset"
           aria-label="Continue with password reset"
           type="submit"
           disabled={!!errors.email || isLoading}

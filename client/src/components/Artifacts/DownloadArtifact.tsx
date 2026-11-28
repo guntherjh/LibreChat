@@ -9,7 +9,7 @@ const DownloadArtifact = ({ artifact }: { artifact: Artifact }) => {
   const { isDownloaded, handleDownload } = useArtifactDownload(artifact);
 
   return (
-    <Button
+    <Button data-novus-id="chat-download-an-artifact"
       size="icon"
       variant="ghost"
       className="h-9 w-9"

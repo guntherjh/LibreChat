@@ -12,7 +12,7 @@ const AdvancedButton: React.FC<AdvancedButtonProps> = ({ setActivePanel }) => {
   const localize = useLocalize();
 
   return (
-    <Button
+    <Button data-novus-id="chat-configure-agent-orchestration"
       variant="subtle"
       size="dense"
       shape="theme"

@@ -224,7 +224,7 @@ const Registration: React.FC = () => {
             )}
 
             <div className="mt-6">
-              <Button
+              <Button data-novus-id="register-register-an-account"
                 disabled={
                   Object.keys(errors).length > 0 ||
                   isSubmitting ||

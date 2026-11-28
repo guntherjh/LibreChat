@@ -130,7 +130,7 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
         aria-orientation="horizontal"
       >
         {categories.map((category, index) => (
-          <button
+          <button data-novus-id="global-filter-agents-by-category"
             key={category.value}
             id={`category-tab-${category.value}`}
             onClick={() => onChange(category.value)}

@@ -566,7 +566,7 @@ export default function ProjectResources({ project }: ProjectResourcesProps) {
                 >
                   {statusLabel(localize, file.availability)}
                 </span>
-                <Button
+                <Button data-novus-id="project-workspace-remove-a-file-from-a-project"
                   type="button"
                   variant="ghost"
                   size="icon"

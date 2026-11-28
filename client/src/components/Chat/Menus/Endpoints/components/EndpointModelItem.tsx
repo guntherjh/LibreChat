@@ -127,7 +127,7 @@ function EndpointModelItemComponent({
         <span className="truncate">{modelName}</span>
         {isGlobal && <EarthIcon className="text-surface-submit ms-1 size-4" />}
       </div>
-      <button
+      <button data-novus-id="chat-favorite-a-model"
         type="button"
         tabIndex={isActive ? 0 : -1}
         onClick={handleFavoriteClick}

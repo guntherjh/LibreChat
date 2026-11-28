@@ -146,7 +146,7 @@ function RequestPasswordReset() {
             <p className="text-text-secondary mb-6 max-w-md px-4 text-center text-lg">
               {localize('com_auth_email_verification_confirm_description', { 0: email })}
             </p>
-            <Button type="button" onClick={handleConfirm}>
+            <Button data-novus-id="verify-email-verify-email-address" type="button" onClick={handleConfirm}>
               {localize(
                 isEmailChange
                   ? 'com_auth_email_change_confirm'
@@ -168,7 +168,7 @@ function RequestPasswordReset() {
         {resolved && canResend && countdown === 0 && (
           <p className="text-text-secondary text-center text-lg">
             {localize('com_auth_email_verification_resend_prompt')}
-            <Button
+            <Button data-novus-id="verify-email-resend-verification-email"
               type="button"
               variant="hyperlink"
               size="bare"

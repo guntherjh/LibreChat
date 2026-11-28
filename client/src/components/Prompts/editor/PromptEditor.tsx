@@ -53,7 +53,7 @@ const PromptEditor: React.FC<Props> = ({ name, isEditing, setIsEditing }) => {
           <TooltipAnchor
             description={isEditing ? localize('com_ui_save') : localize('com_ui_edit')}
             render={
-              <Button
+              <Button data-novus-id="prompt-detail-save-a-new-prompt-version"
                 type="button"
                 size="icon"
                 variant="ghost"

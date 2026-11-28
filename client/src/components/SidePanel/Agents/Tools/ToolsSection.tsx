@@ -362,7 +362,7 @@ function SelectedSection({
         <label className="text-text-secondary text-2xs block font-medium tracking-wide uppercase">
           {title}
         </label>
-        <button
+        <button data-novus-id="chat-add-tools-to-an-agent"
           type="button"
           onClick={onAdd}
           aria-label={addLabel}

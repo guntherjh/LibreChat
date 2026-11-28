@@ -454,7 +454,7 @@ function LatestConversations({
             className="text-text-secondary pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
             aria-hidden="true"
           />
-          <Input
+          <Input data-novus-id="insights-search-insights"
             aria-label={localize('com_insights_search_placeholder')}
             className="pl-9"
             maxLength={INSIGHTS_SEARCH_MAX_LENGTH}
@@ -818,7 +818,7 @@ export default function InsightsView() {
           )}
           <div className="border-border-light inline-flex rounded-lg border p-0.5">
             {ranges.map((item) => (
-              <Button
+              <Button data-novus-id="insights-change-the-insights-date-range"
                 key={item.value}
                 size="sm"
                 variant="ghost"

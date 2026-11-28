@@ -388,7 +388,7 @@ export default function ScheduleCard({ schedule, projectName, consentEnabled }: 
                  trigger still fades in on row hover by itself. */
               <div className="flex shrink-0 items-center gap-2">
                 {canWrite && (
-                  <Switch
+                  <Switch data-novus-id="chat-pause-or-resume-a-schedule"
                     checked={schedule.enabled}
                     onCheckedChange={handleToggle}
                     disabled={updateSchedule.isLoading}

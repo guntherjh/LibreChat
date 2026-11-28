@@ -153,7 +153,7 @@ const TwoFactorScreen: React.FC = React.memo(() => {
         </div>
         <div className="mt-4 flex justify-center">
           {!useBackup ? (
-            <Button
+            <Button data-novus-id="two-factor-verification-use-a-backup-code-at-sign-in"
               type="button"
               variant="link-accent"
               onClick={toggleBackupOn}

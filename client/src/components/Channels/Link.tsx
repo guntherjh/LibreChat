@@ -274,7 +274,7 @@ function OwnedLink({
             )}
 
             {data?.state === 'pending' && (
-              <Button
+              <Button data-novus-id="link-chat-account-link-a-chat-account"
                 type="button"
                 size="lg"
                 className="w-full"

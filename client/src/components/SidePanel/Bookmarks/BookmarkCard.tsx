@@ -74,7 +74,7 @@ export default function BookmarkCard({ bookmark, position, moveRow }: BookmarkCa
   drag(drop(ref));
 
   return (
-    <div
+    <div data-novus-id="chat-reorder-bookmarks"
       ref={ref}
       className={cn(
         'group flex cursor-move items-center gap-2 rounded-lg px-3 py-2.5',

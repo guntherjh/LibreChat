@@ -143,7 +143,7 @@ const PresetsMenu: FC = () => {
               >
                 {localize('com_ui_cancel')}
               </Button>
-              <Button variant="destructive" onClick={confirmDeletePreset}>
+              <Button data-novus-id="chat-delete-a-preset" variant="destructive" onClick={confirmDeletePreset}>
                 {localize('com_ui_delete')}
               </Button>
             </div>

@@ -1067,7 +1067,7 @@ export default function AgentPanel() {
             </div>
             {agent_id && (
               <div className="flex w-full gap-2">
-                <Button
+                <Button data-novus-id="chat-start-a-new-agent-draft"
                   type="button"
                   variant="outline"
                   className="w-full justify-center"
@@ -1081,7 +1081,7 @@ export default function AgentPanel() {
                   <Plus className="me-1 h-4 w-4" aria-hidden="true" />
                   {localize('com_ui_create_new_agent')}
                 </Button>
-                <Button
+                <Button data-novus-id="chat-use-an-agent-in-chat"
                   variant="submit"
                   disabled={isEphemeralAgent(agent_id) || agentQuery.isInitialLoading}
                   onClick={(e) => {

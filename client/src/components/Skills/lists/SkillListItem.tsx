@@ -311,7 +311,7 @@ function SkillListItem({
           !isActive && 'hover:bg-surface-nav-hover',
         )}
       >
-        <button
+        <button data-novus-id="skill-detail-open-a-skill"
           type="button"
           onClick={handleSkillClick}
           className="focus-visible:ring-text-primary flex min-w-0 flex-1 cursor-pointer items-center gap-3 rounded-lg py-1.5 ps-3 text-start outline-hidden focus-visible:ring-2 focus-visible:ring-inset"

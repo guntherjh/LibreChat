@@ -291,7 +291,7 @@ const AdminSettingsDialog: React.FC<AdminSettingsDialogProps> = ({
             </div>
 
             <OGDialogFooter className="bg-transparent px-4 py-4 sm:px-6">
-              <Button
+              <Button data-novus-id="global-configure-role-permissions"
                 type="submit"
                 variant="submit"
                 disabled={

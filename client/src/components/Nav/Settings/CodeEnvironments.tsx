@@ -298,7 +298,7 @@ export default function CodeEnvironments() {
             minWidth="12rem"
           />
         </div>
-        <Button type="submit" disabled={!name.trim() || pairMutation.isLoading}>
+        <Button data-novus-id="chat-pair-a-code-environment" type="submit" disabled={!name.trim() || pairMutation.isLoading}>
           {pairMutation.isLoading ? <Spinner /> : localize('com_ui_code_environment_pair')}
         </Button>
       </form>

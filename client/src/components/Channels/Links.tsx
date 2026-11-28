@@ -131,7 +131,7 @@ function OwnedLinks({ api, principalKey }: { api: ChannelIdentityClient; princip
                   <TooltipAnchor
                     description={localize('com_ui_channel_link_revoke')}
                     render={
-                      <Button
+                      <Button data-novus-id="chat-revoke-a-linked-chat-account"
                         type="button"
                         variant="ghost"
                         size="icon-xs"

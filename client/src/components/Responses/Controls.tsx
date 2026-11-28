@@ -50,7 +50,7 @@ export default function Controls({
             )}
           </p>
         )}
-        <Button
+        <Button data-novus-id="response-review-stop-a-background-response"
           variant="destructive"
           onClick={stop}
           disabled={!enabled || cancel.isLoading || (stopping && !cancel.isError)}

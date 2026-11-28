@@ -260,7 +260,7 @@ function Passkeys() {
 
         {isLocalAccount && (
           <div className="mt-6 flex flex-col items-end gap-2">
-            <Button
+            <Button data-novus-id="global-add-a-passkey"
               ref={addButtonRef}
               variant="submit"
               onClick={handleAdd}

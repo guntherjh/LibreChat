@@ -33,7 +33,7 @@ function CompactAction({
         zIndex={TOOLTIP_Z_INDEX}
         description={description}
         render={
-          <Button
+          <Button data-novus-id="chat-compact-the-conversation-context"
             type="button"
             variant="outline"
             onClick={compact}

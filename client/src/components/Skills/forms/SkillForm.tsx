@@ -338,7 +338,7 @@ export default function SkillForm({ skillId }: SkillFormProps) {
               >
                 {localize('com_ui_reset')}
               </Button>
-              <Button
+              <Button data-novus-id="edit-skill-edit-a-skill"
                 type="submit"
                 disabled={saveDisabled}
                 aria-disabled={saveDisabled || undefined}
