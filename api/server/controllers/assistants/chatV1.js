@@ -1,6 +1,7 @@
 const { v4 } = require('uuid');
 const { sleep } = require('@librechat/agents');
 const { logger } = require('@librechat/data-schemas');
+const { closeTurn } = require('pendo-server-sdk');
 const {
   sendEvent,
   countTokens,
@@ -810,6 +811,7 @@ const chatV1 = async (req, res) => {
   } catch (error) {
     await handleError(error);
   } finally {
+    closeTurn(conversationId);
     await balanceReservations.release();
   }
 };

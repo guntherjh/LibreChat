@@ -1,6 +1,7 @@
 const { v4 } = require('uuid');
 const { sleep } = require('@librechat/agents');
 const { logger } = require('@librechat/data-schemas');
+const { traceLlm, closeTurn } = require('pendo-server-sdk');
 const {
   sendEvent,
   countTokens,
@@ -550,7 +551,16 @@ const chatV2 = async (req, res) => {
     }
     assistantRun.throwIfStopped();
     setHeaders(req, res, () => {});
-    await processRun();
+    /** Assistants runs bypass the patched `chat.completions.create`, so trace the run itself. */
+    const traced = traceLlm('assistants.run', async () => {
+      await processRun();
+      return {
+        model: response?.run?.model ?? model,
+        usage: response?.run?.usage,
+        text: response?.text,
+      };
+    });
+    await traced({ prompt: text, conversationId });
     logger.debug('[/assistants/chat/] response', {
       run: response.run,
       steps: response.steps,
@@ -639,6 +649,7 @@ const chatV2 = async (req, res) => {
   } catch (error) {
     await handleError(error);
   } finally {
+    closeTurn(conversationId);
     await balanceReservations.release();
   }
 };

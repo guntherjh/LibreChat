@@ -1,6 +1,17 @@
 require('../config/credentials');
 
 const telemetry = require('./telemetry');
+const pendo = require('pendo-server-sdk');
+
+/** Pendo Agent Analytics: runs after `./telemetry` so it attaches to an already registered
+ *  OpenTelemetry provider, and before the modules that construct the LLM clients. */
+pendo.init({
+  apiKey: 'fd08ac9b-0728-41f6-9b7a-7cfc5ad627d9',
+  agentId: 'RwhNtwzy7N9rOtzsS9juolOjU0k',
+  endpoint: 'https://app.pendo-security.pendo-dev.com',
+  autoPatch: true,
+});
+
 const fs = require('fs');
 const path = require('path');
 require('module-alias')({ base: path.resolve(__dirname, '..') });
@@ -130,6 +141,9 @@ configureFileConfigRegexEngine();
 
 /** Reject messageFilter PII patterns the RE2 runtime engine cannot compile, at config load. */
 configureMessageFilterRegexValidator();
+
+/** Flush buffered Pendo Agent Analytics events before the telemetry exporters close. */
+registerShutdownTask('pendo agent analytics', () => pendo.shutdown());
 
 const { PORT, HOST, ALLOW_SOCIAL_LOGIN, DISABLE_COMPRESSION, TRUST_PROXY } = process.env ?? {};
 
