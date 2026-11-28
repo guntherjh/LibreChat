@@ -20,7 +20,7 @@ const MineFilterToggle: React.FC<MineFilterToggleProps> = ({
     <TooltipAnchor
       description={localize('com_agents_filter_mine')}
       render={
-        <Button
+        <Button data-novus-id="agent-marketplace-show-only-my-agents"
           variant={iconOnly ? 'quiet' : 'outline-toggle'}
           aria-label={localize('com_agents_my_agents')}
           size={iconOnly ? 'icon-sm' : 'compact'}

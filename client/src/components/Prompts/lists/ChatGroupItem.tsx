@@ -215,7 +215,7 @@ function ChatGroupItem({
         aria-busy={isResolving}
       >
         {/* Clickable overlay for card */}
-        <button
+        <button data-novus-id="chat-use-a-prompt-in-chat"
           type="button"
           className="focus-visible:ring-ring-primary absolute inset-0 z-0 rounded-xl focus:outline-hidden focus-visible:ring-2"
           onClick={onCardClick}

@@ -101,7 +101,7 @@ const AgentCard = memo(
           {...shared}
         />
 
-        <button
+        <button data-novus-id="agent-marketplace-view-agent-details"
           ref={ref}
           type="button"
           className={cn(

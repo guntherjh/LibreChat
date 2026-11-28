@@ -172,7 +172,7 @@ const renderDeleteButton = (
   isLocked: boolean,
   localize: LocalizeFunction,
 ) => (
-  <Button
+  <Button data-novus-id="global-delete-my-account"
     variant="destructive"
     className={cn(
       'bg-surface-tertiary text-text-primary hover:bg-surface-tertiary mt-4 w-full gap-0 transition-all duration-200',

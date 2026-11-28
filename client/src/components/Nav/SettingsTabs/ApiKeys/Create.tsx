@@ -96,7 +96,7 @@ export default function Create({ onCreated, onCancel }: CreateProps) {
         >
           {localize('com_ui_cancel')}
         </Button>
-        <Button
+        <Button data-novus-id="chat-create-an-agent-api-key"
           type="submit"
           variant="submit"
           disabled={createMutation.isLoading || !name.trim()}

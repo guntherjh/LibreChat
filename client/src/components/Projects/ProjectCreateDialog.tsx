@@ -137,7 +137,7 @@ export default function ProjectCreateDialog({
           </form>
         }
         buttons={
-          <Button
+          <Button data-novus-id="projects-create-a-project"
             type="submit"
             form={formId}
             variant="submit"

@@ -221,7 +221,7 @@ export default function ArchivedChatsTable() {
               <TooltipAnchor
                 description={localize('com_ui_unarchive_conversation')}
                 render={
-                  <Button
+                  <Button data-novus-id="chat-restore-an-archived-conversation"
                     variant="row-action"
                     size="icon-sm"
                     onClick={() =>

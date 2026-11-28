@@ -58,7 +58,7 @@ export default function SearchButtons({ message }: { message: TMessage }) {
       {/* The chat this result came from, and the way back to it: the same quiet chip
           the rest of the app uses for a secondary action, holding a title that can
           be any length. */}
-      <button
+      <button data-novus-id="search-results-open-a-search-result"
         type="button"
         className={cn(
           buttonVariants({ variant: 'message-action' }),

@@ -102,7 +102,7 @@ const VersionCard = ({
       </div>
 
       {/* Card content */}
-      <button
+      <button data-novus-id="prompt-detail-browse-prompt-versions"
         type="button"
         className={cn(
           'group ms-2 mb-2 flex flex-1 flex-col rounded-lg border p-3 text-start',

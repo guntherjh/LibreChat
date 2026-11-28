@@ -262,7 +262,7 @@ export default function SharedLinkButton({
     <>
       <div className="flex w-full flex-wrap items-center gap-2">
         {!shareId && (
-          <Button
+          <Button data-novus-id="chat-create-a-shared-link"
             type="button"
             disabled={isCreateLoading || isPublishing}
             variant="submit"

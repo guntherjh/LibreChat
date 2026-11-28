@@ -412,7 +412,7 @@ const SetKeyDialog = ({
             disabled={!(expiryTime ?? '')}
             setDialogOpen={onOpenChange}
           />
-          <Button variant="submit" onClick={submit}>
+          <Button data-novus-id="chat-save-a-provider-api-key" variant="submit" onClick={submit}>
             {localize('com_ui_submit')}
           </Button>
         </OGDialogFooter>

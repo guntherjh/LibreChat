@@ -216,7 +216,7 @@ export default function MemoryPanel() {
 
             {/* Memory Toggle */}
             {hasOptOutAccess && (
-              <Button
+              <Button data-novus-id="chat-turn-memory-on-or-off"
                 size="sm"
                 variant="outline"
                 className={cn(

@@ -32,7 +32,7 @@ export default function SiblingSwitch({
   };
 
   return siblingCount > 1 ? (
-    <nav
+    <nav data-novus-id="chat-switch-between-response-versions"
       className={cn(
         'visible flex items-center justify-center gap-2 self-center pt-0 text-xs',
         className,

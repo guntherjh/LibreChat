@@ -22,7 +22,7 @@ export function TemporaryChat() {
       <TooltipAnchor
         description={isEnforced ? label : tooltipDescription}
         render={
-          <button
+          <button data-novus-id="chat-toggle-temporary-chat"
             onClick={toggle}
             aria-label={label}
             aria-pressed={isTemporary}

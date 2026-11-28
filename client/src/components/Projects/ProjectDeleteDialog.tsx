@@ -66,7 +66,7 @@ export default function ProjectDeleteDialog({
               {localize('com_ui_cancel')}
             </Button>
           </OGDialogClose>
-          <Button variant="destructive" onClick={confirmDelete} disabled={deleteProject.isLoading}>
+          <Button data-novus-id="project-workspace-delete-a-project" variant="destructive" onClick={confirmDelete} disabled={deleteProject.isLoading}>
             {deleteProject.isLoading ? <Spinner className="size-4" /> : localize('com_ui_delete')}
           </Button>
         </div>

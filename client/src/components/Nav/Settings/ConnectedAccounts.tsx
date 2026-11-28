@@ -279,7 +279,7 @@ export default function ConnectedAccounts() {
     /** No badge for the resting state; the status region still announces it. */
     statusContent = <span className="sr-only">{localize('com_ui_pr_account_not_connected')}</span>;
     action = (
-      <Button
+      <Button data-novus-id="chat-connect-a-pull-request-account"
         ref={bindAction}
         type="button"
         variant="submit"

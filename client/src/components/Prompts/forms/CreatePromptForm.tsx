@@ -231,7 +231,7 @@ const CreatePromptForm = ({
             labelBgClassName={labelBgClassName}
           />
           <div className="mt-4 flex justify-end">
-            <Button
+            <Button data-novus-id="chat-create-a-prompt"
               variant="submit"
               aria-label={localize('com_ui_create_prompt')}
               className={cn('w-full gap-2 sm:w-auto', isBlocked && 'opacity-50')}

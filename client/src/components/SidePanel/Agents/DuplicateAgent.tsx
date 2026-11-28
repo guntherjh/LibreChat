@@ -37,7 +37,7 @@ export default function DuplicateAgent({ agent_id }: { agent_id: string }) {
       description={localize('com_ui_duplicate_agent')}
       side="top"
       render={
-        <Button
+        <Button data-novus-id="chat-duplicate-an-agent"
           size="sm"
           variant="outline"
           className="h-9"
