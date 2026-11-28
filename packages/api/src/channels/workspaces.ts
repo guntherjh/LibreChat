@@ -136,6 +136,8 @@ export function createSlackWorkspaceService(deps: {
   encrypt: (token: string) => Promise<string>;
   fetch: SlackWorkspaceFetch;
   now?: () => number;
+  /** Called once a workspace install commits, for analytics. */
+  onConnect?: (principal: SlackWorkspacePrincipal, appId: string) => void;
 }) {
   const now = deps.now ?? Date.now;
 
@@ -308,7 +310,9 @@ export function createSlackWorkspaceService(deps: {
         },
         new Date(now()),
       );
-      return installed.ok ? { ok: true, value: installed.workspace } : failure(installed.code);
+      if (!installed.ok) return failure(installed.code);
+      deps.onConnect?.(principal, app.appId);
+      return { ok: true, value: installed.workspace };
     },
 
     async remove(

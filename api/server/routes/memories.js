@@ -8,6 +8,7 @@ const {
   blockFilteredMemoryContent,
   projectStoredMemories,
   createMemoryManagementHandlers,
+  trackPendoEvent,
 } = require('@librechat/api');
 const {
   PermissionTypes,
@@ -252,6 +253,10 @@ router.post('/', createMemoryMiddleware, async (req, res) => {
     const updatedMemories = await getUserMemories({ userId: req.user.id, agentId });
     const newMemory = updatedMemories.find((m) => m.key === key.trim());
 
+    trackPendoEvent('Memory saved', req.user, {
+      agent_scoped: Boolean(agentId),
+      token_count: tokenCount,
+    });
     res.status(201).json({ created: true, memory: newMemory });
   } catch (error) {
     if (error.message && error.message.includes('already exists')) {

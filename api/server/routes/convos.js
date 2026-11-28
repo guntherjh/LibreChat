@@ -53,6 +53,7 @@ const {
   GenerationJobManager,
   isStopConfirmed,
   withToolCallPreviews,
+  trackPendoEvent,
 } = require('@librechat/api');
 const { logger } = require('@librechat/data-schemas');
 const { CacheKeys, EModelEndpoint } = require('librechat-data-provider');
@@ -654,6 +655,10 @@ router.delete('/', configMiddleware, async (req, res) => {
       );
     }
     await checkpointDeletion?.acknowledge();
+    trackPendoEvent('Conversation deleted', req.user, {
+      endpoint,
+      deleted_count: deletedConversationIds.length,
+    });
     res.status(201).json(dbResponse);
   } catch (error) {
     logger.error('Error clearing conversations', error);
@@ -800,6 +805,10 @@ router.post(
           ? {}
           : { legacyPii: req.config.messageFilter.pii }),
       });
+      trackPendoEvent('Conversations imported', req.user, {
+        file_type: req.file.mimetype,
+        file_size_bytes: req.file.size,
+      });
       res.status(201).json({ message: 'Conversation(s) imported successfully' });
     } catch (error) {
       if (isContentFilterError(error)) {
@@ -843,6 +852,11 @@ router.post('/fork', forkIpLimiter, forkUserLimiter, configMiddleware, async (re
         : { legacyPii: req.config.messageFilter.pii }),
     });
 
+    trackPendoEvent('Conversation forked', req.user, {
+      option,
+      split_at_target: splitAtTarget === true,
+      exclude_files: excludeFiles === true,
+    });
     res.json(withToolCallPreviews(req, result));
   } catch (error) {
     if (isContentFilterError(error)) {
@@ -876,6 +890,7 @@ router.post(
           ? {}
           : { legacyPii: req.config.messageFilter.pii }),
       });
+      trackPendoEvent('Conversation duplicated', req.user, { custom_title: Boolean(title) });
       res.status(201).json(withToolCallPreviews(req, result));
     } catch (error) {
       if (isContentFilterError(error)) {

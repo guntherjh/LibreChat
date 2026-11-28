@@ -1,6 +1,6 @@
 const express = require('express');
 const { logger } = require('@librechat/data-schemas');
-const { generateCheckAccess } = require('@librechat/api');
+const { generateCheckAccess, trackPendoEvent } = require('@librechat/api');
 const { PermissionTypes, Permissions } = require('librechat-data-provider');
 const {
   updateTagsForConversation,
@@ -52,6 +52,10 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const tag = await createConversationTag(req.user.id, req.body);
+    trackPendoEvent('Bookmark created', req.user, {
+      has_description: Boolean(req.body?.description),
+      added_to_conversation: Boolean(req.body?.addToConversation),
+    });
     res.status(200).json(tag);
   } catch (error) {
     logger.error('Error creating conversation tag:', error);

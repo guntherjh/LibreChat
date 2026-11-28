@@ -37,6 +37,7 @@ const {
   resolveMessagesPageSize,
   awaitPageSize,
   withMessageToolCallPreviews,
+  trackPendoEvent,
 } = require('@librechat/api');
 const subagentThreadTaskStore = require('~/server/services/Endpoints/agents/subagentThreadStore');
 const { getAppConfig } = require('~/server/services/Config');
@@ -821,6 +822,14 @@ router.put(
         messageId,
       });
 
+      if (feedbackResult?.data) {
+        trackPendoEvent('Response feedback recorded', req.user, {
+          rating: feedbackResult.data.rating,
+          tag: feedbackResult.data.tag,
+          has_text: Boolean(feedbackResult.data.text),
+          endpoint: updatedMessage.endpoint,
+        });
+      }
       res.json({
         messageId,
         conversationId,

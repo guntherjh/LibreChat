@@ -16,6 +16,7 @@ import {
   isTwoFactorEnrollmentRequired,
 } from './twoFactor';
 import { clearCloudFrontCookies } from '~/cdn';
+import { trackPendoEvent } from '~/pendo';
 
 type LoginUser = StoredTwoFactorAccount & { __v?: number };
 type LoginRequest = Request & { user?: LoginUser };
@@ -108,6 +109,7 @@ export function createLoginController(deps: LoginDependencies) {
         return refuseRevokedLogin(res, loginUser);
       }
 
+      trackPendoEvent('Signed in', loginUser, { provider: loginUser.provider, method: 'password' });
       return res.status(200).send({ token, user });
     } catch (err) {
       logger.error('[loginController]', err);

@@ -26,6 +26,7 @@ const {
   traceIdForMessage,
   resolveDownloadPath,
   prepareResultToolCallPreviews,
+  trackPendoEvent,
 } = require('@librechat/api');
 const {
   logger,
@@ -441,6 +442,9 @@ if (allowSharedLinks) {
         if (!result) {
           return res.status(404).json({ message: 'Shared conversation not found' });
         }
+        trackPendoEvent('Shared conversation continued', req.user, {
+          from_message: req.body?.targetMessageIndex != null,
+        });
         return res.status(201).json(await previewToolCalls(result));
       } catch (error) {
         if (isContentFilterError(error)) {
@@ -677,6 +681,12 @@ router.post(
       );
       if (created) {
         await grantCreationPermissions(created._id, req.user.id, grantPublic, expiredAt);
+        trackPendoEvent('Shared link created', req.user, {
+          public: grantPublic,
+          snapshot_files: snapshotFiles,
+          has_target_message: targetMessageId !== undefined,
+          has_expiration: expiredAt != null,
+        });
         res.status(200).json(created);
       } else {
         res.status(404).end();

@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
-const { createSlackWorkspaceRuntime, createProxyAwareFetch } = require('@librechat/api');
+const {
+  createSlackWorkspaceRuntime,
+  createProxyAwareFetch,
+  trackPendoEvent,
+} = require('@librechat/api');
 const { createSlackWorkspaceStorage, logger } = require('@librechat/data-schemas');
 const { hasCapability } = require('~/server/middleware/roles/capabilities');
 const { getAppConfig } = require('~/server/services/Config');
@@ -15,4 +19,6 @@ module.exports = createSlackWorkspaceRuntime({
   clientBaseUrl: process.env.DOMAIN_CLIENT || process.env.DOMAIN_SERVER || 'http://localhost:3080',
   fetch: createProxyAwareFetch(),
   logError: (metadata) => logger.error('[SlackWorkspaces] Operation failed', metadata),
+  onConnect: (principal, appId) =>
+    trackPendoEvent('Slack workspace connected', principal, { slack_app_id: appId }),
 });
