@@ -263,14 +263,14 @@ function Review({ attemptId, userId }: { attemptId: string; userId: string }) {
               )}
             </fieldset>
             <div className="flex flex-wrap gap-3">
-              <Button
+              <Button data-novus-id="code-environment-setup-approve-a-code-environment-setup"
                 type="submit"
                 variant="submit"
                 disabled={isDeciding || !selectedPlaneExists || mutationUnavailable}
               >
                 {localize('com_ui_code_setup_approve')}
               </Button>
-              <Button
+              <Button data-novus-id="code-environment-setup-deny-a-code-environment-setup"
                 type="button"
                 variant="outline"
                 disabled={isDeciding || mutationUnavailable}

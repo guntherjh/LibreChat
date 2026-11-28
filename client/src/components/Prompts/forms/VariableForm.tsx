@@ -150,7 +150,7 @@ export default function VariableForm({
 
   return (
     <div className="mx-auto p-1 md:container">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form data-novus-id="chat-fill-in-prompt-variables" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="bg-surface-tertiary text-text-secondary mb-6 max-h-screen max-w-[80vw] overflow-auto rounded-md p-4 sm:max-w-full md:max-h-96">
           <ReactMarkdown
             /** @ts-ignore */

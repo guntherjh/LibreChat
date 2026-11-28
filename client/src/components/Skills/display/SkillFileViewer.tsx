@@ -120,7 +120,7 @@ function SkillFileViewer({ skillId, relativePath, skill }: SkillFileViewerProps)
             <TooltipAnchor
               description={isCopied ? localize('com_ui_copied') : localize('com_ui_copy')}
               render={
-                <button
+                <button data-novus-id="skill-detail-copy-a-skill-file"
                   type="button"
                   onClick={handleCopy}
                   className="text-text-secondary hover:bg-surface-hover hover:text-text-primary rounded-md p-1 transition-colors"

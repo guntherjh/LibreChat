@@ -80,7 +80,7 @@ const UsePromptButton = ({
 
   return (
     <>
-      <Button
+      <Button data-novus-id="prompt-detail-use-a-prompt-in-chat"
         variant="submit"
         onClick={handleUsePrompt}
         disabled={disabled}

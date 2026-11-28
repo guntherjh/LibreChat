@@ -179,7 +179,7 @@ export default function CustomUserVarsSection({
         >
           {localize('com_ui_revoke')}
         </Button>
-        <Button
+        <Button data-novus-id="chat-configure-mcp-server-credentials"
           type="button"
           variant="submit"
           disabled={isSubmitting}

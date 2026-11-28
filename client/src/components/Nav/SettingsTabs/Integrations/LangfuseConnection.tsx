@@ -600,7 +600,7 @@ export default function LangfuseConnection() {
                 )}
               </Button>
             ) : (
-              <Button
+              <Button data-novus-id="global-toggle-langfuse-tracing"
                 variant={connectionStatus?.enabled === true ? 'outline' : 'submit'}
                 disabled={
                   busy || (connectionStatus?.enabled !== true && !connectionDestinationAvailable)

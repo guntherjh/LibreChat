@@ -95,7 +95,7 @@ export default function OAuth({ prompt }: { prompt: ResponseReviewView['oauth'][
   return (
     <div className="space-y-2">
       {binding === 'failed' && <p role="alert">{localize('com_ui_response_review_oauth_error')}</p>}
-      <Button
+      <Button data-novus-id="response-review-authorize-a-tool-for-a-background-response"
         onClick={authorize}
         disabled={!enabled || binding === 'pending'}
         aria-busy={binding === 'pending'}

@@ -470,7 +470,7 @@ function KeyboardShortcutsDialog() {
 
         {hasAnyCustom && (
           <footer className="border-border-light flex shrink-0 justify-end border-t px-7 py-3">
-            <button
+            <button data-novus-id="global-reset-keyboard-shortcuts"
               type="button"
               onClick={resetAll}
               className="text-text-secondary hover:text-text-primary focus-visible:ring-text-primary text-xs leading-normal transition-colors focus-visible:ring-2 focus-visible:outline-hidden"

@@ -128,7 +128,7 @@ export const ArchiveAllChats = () => {
           }
           selection={
             <OGDialogClose asChild>
-              <Button
+              <Button data-novus-id="global-archive-all-chats"
                 aria-label={localize('com_ui_archive')}
                 aria-busy={isArchivePending}
                 disabled={isArchivePending}

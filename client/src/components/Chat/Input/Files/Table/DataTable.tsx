@@ -121,7 +121,7 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
   return (
     <div className="flex h-full flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2 py-2 sm:gap-4 sm:py-4">
-        <Button
+        <Button data-novus-id="global-delete-files"
           variant="outline"
           onClick={() => {
             setIsDeleting(true);

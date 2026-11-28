@@ -26,7 +26,7 @@ const MarketplaceAdminSettings = () => {
   /* `outline` matches the search field it sits beside — same border token, same
      radius — and `size-9` keeps the two controls the same height. */
   const trigger = (
-    <Button
+    <Button data-novus-id="agent-marketplace-configure-marketplace-permissions"
       size="icon-sm"
       variant="outline"
       className="size-9 shrink-0 transition-none"

@@ -253,7 +253,7 @@ export default function ProjectEditor({
         >
           {localize('com_ui_cancel')}
         </Button>
-        <Button
+        <Button data-novus-id="project-workspace-edit-project-details"
           type="submit"
           variant="submit"
           size={buttonSize}

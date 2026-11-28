@@ -453,7 +453,7 @@ export default function Apps({
                   {(canInstall || ((!children.length || !renderWorkspace) && settings)) && (
                     <div className="flex flex-wrap items-center gap-2">
                       {canInstall && (
-                        <Button
+                        <Button data-novus-id="global-connect-a-slack-workspace"
                           variant="outline"
                           size="sm"
                           disabled={disabled || Boolean(form)}

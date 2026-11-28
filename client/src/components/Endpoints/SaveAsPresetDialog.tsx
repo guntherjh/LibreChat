@@ -83,7 +83,7 @@ const SaveAsPresetDialog = ({ open, onOpenChange, preset }: TEditPresetProps) =>
           </form>
         }
         buttons={
-          <Button
+          <Button data-novus-id="chat-save-settings-as-a-preset"
             type="submit"
             form={formId}
             variant="submit"

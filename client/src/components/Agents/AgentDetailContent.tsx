@@ -430,7 +430,7 @@ const AgentDetailContent: React.FC<AgentDetailContentProps> = ({
                   <CopyLink url={shareUrl} disabled={actionsDisabled} />
                   <ResetApprovals agentId={agent.id} disabled={actionsDisabled} />
                 </div>
-                <Button
+                <Button data-novus-id="agent-marketplace-start-a-chat-with-an-agent"
                   className="w-full sm:w-auto"
                   aria-disabled={actionsDisabled || undefined}
                   onClick={() => {

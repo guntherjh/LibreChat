@@ -547,7 +547,7 @@ function OwnedWorkspaces({ principalKey }: { principalKey: string }) {
             else headingRef.current?.focus();
           }}
           selection={
-            <Button
+            <Button data-novus-id="global-disconnect-a-slack-workspace"
               type="button"
               variant="destructive"
               disabled={busy || !confirm || first?.canManage !== true}

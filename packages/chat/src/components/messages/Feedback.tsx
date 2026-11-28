@@ -143,7 +143,7 @@ function FeedbackButtons({
           <TooltipAnchor
             description={localize('com_ui_feedback_positive')}
             render={
-              <Button
+              <Button data-novus-id="chat-rate-a-response-up"
                 variant={isLast ? 'message-hover' : 'message-hover-reveal'}
                 data-hover-active={feedback?.rating === 'thumbsUp' || undefined}
                 onClick={handleThumbsUpClick}
@@ -182,7 +182,7 @@ function FeedbackButtons({
           <TooltipAnchor
             description={localize('com_ui_feedback_negative')}
             render={
-              <Button
+              <Button data-novus-id="chat-rate-a-response-down"
                 variant={isLast ? 'message-hover' : 'message-hover-reveal'}
                 data-hover-active={feedback?.rating === 'thumbsDown' || undefined}
                 onClick={handleThumbsDownClick}
@@ -312,7 +312,7 @@ function Feedback({ isLast = false, handleFeedback, feedback: initialFeedback }:
           <OGDialogTitle className="text-lg leading-6 font-semibold">
             {localize('com_ui_feedback_more_information')}
           </OGDialogTitle>
-          <Textarea
+          <Textarea data-novus-id="chat-write-feedback-details"
             variant="note"
             value={feedback?.text || ''}
             onChange={handleTextChange}

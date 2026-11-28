@@ -39,7 +39,7 @@ export default function SiblingSwitch({
       )}
       aria-label={localize('com_ui_sibling_navigation')}
     >
-      <Button
+      <Button data-novus-id="chat-view-the-previous-response-version"
         variant="message-action"
         onClick={previous}
         disabled={siblingIdx == 0}
@@ -58,7 +58,7 @@ export default function SiblingSwitch({
           {siblingIdx + 1} / {siblingCount}
         </bdi>
       </span>
-      <Button
+      <Button data-novus-id="chat-view-the-next-response-version"
         variant="message-action"
         onClick={next}
         disabled={siblingIdx == siblingCount - 1}

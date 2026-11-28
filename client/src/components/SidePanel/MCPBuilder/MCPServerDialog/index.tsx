@@ -118,7 +118,7 @@ export default function MCPServerDialog({
           className="w-11/12 max-w-md"
           description={localize('com_ui_mcp_server_delete_confirm', { 0: server?.serverName })}
           selection={
-            <Button
+            <Button data-novus-id="chat-delete-an-mcp-server"
               onClick={handleDelete}
               variant="destructive"
               aria-live="polite"

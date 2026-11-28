@@ -374,7 +374,7 @@ export default function ConnectedAccounts() {
           ) : null
         }
         selection={
-          <Button
+          <Button data-novus-id="global-disconnect-a-git-provider-account"
             type="button"
             variant="destructive"
             aria-label={localize('com_ui_pr_account_disconnect')}

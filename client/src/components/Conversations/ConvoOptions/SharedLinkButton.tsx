@@ -404,7 +404,7 @@ export default function SharedLinkButton({
               <OGDialogClose asChild>
                 <Button variant="outline">{localize('com_ui_cancel')}</Button>
               </OGDialogClose>
-              <Button
+              <Button data-novus-id="chat-update-a-shared-link"
                 type="button"
                 variant="submit"
                 onClick={updateSharedLink}
@@ -445,7 +445,7 @@ export default function SharedLinkButton({
               <OGDialogClose asChild>
                 <Button variant="outline">{localize('com_ui_cancel')}</Button>
               </OGDialogClose>
-              <Button
+              <Button data-novus-id="chat-delete-a-shared-link"
                 variant="destructive"
                 onClick={handleDelete}
                 disabled={deleteMutation.isLoading}

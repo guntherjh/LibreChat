@@ -125,7 +125,7 @@ export default function AgentFooter({
                 <TooltipAnchor
                   description={localize('com_ui_remote_access')}
                   render={
-                    <Button
+                    <Button data-novus-id="chat-grant-remote-api-access-to-an-agent"
                       variant="outline"
                       size="dense"
                       type="button"
