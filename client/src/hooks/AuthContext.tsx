@@ -49,6 +49,7 @@ import {
 import { resetChatFilterSessionAtom } from '~/components/Conversations/chatFilters';
 import { TAuthConfig, TUserContext, TAuthContext, TResError } from '~/common';
 import { resetFacetsAtom } from '~/components/Conversations/facets';
+import { identifyPendo, clearPendoSession } from '~/lib/pendo';
 import { resetMCPStateAtom } from '~/store/mcp';
 import useTimeout from './useTimeout';
 import store from '~/store';
@@ -273,6 +274,7 @@ const AuthContextProvider = ({
     (redirect?: string) => {
       clearPostLoginRedirect();
       clearTwoFactorSetupToken();
+      clearPendoSession();
       if (redirect) {
         logoutRedirectRef.current = redirect;
       }
@@ -452,6 +454,14 @@ const AuthContextProvider = ({
     setUserContext,
     doSetError,
   ]);
+
+  /** Every sign-in path (form, silent refresh, enrollment) lands here, as do profile updates. */
+  useEffect(() => {
+    if (!isAuthenticated || !user?.id) {
+      return;
+    }
+    identifyPendo(user);
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     const handleTokenUpdate = (event: CustomEvent<string>) => {
