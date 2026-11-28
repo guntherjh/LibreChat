@@ -1,5 +1,5 @@
 const express = require('express');
-const { generateCheckAccess, createApiKeyHandlers } = require('@librechat/api');
+const { trackOnSuccess, generateCheckAccess, createApiKeyHandlers } = require('@librechat/api');
 const { PermissionTypes, Permissions } = require('librechat-data-provider');
 const {
   getAgentModelSummaries,
@@ -31,7 +31,13 @@ const checkRemoteAgentsUse = generateCheckAccess({
   getRoleByName,
 });
 
-router.post('/', requireJwtAuth, checkRemoteAgentsUse, handlers.createApiKey);
+router.post(
+  '/',
+  requireJwtAuth,
+  checkRemoteAgentsUse,
+  trackOnSuccess('API key created', (req) => ({ has_expiry: req.body?.expiresAt != null })),
+  handlers.createApiKey,
+);
 
 router.get('/', requireJwtAuth, checkRemoteAgentsUse, handlers.listApiKeys);
 

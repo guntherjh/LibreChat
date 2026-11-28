@@ -2,6 +2,7 @@ jest.mock('@librechat/data-schemas', () => ({
   logger: { debug: jest.fn(), error: jest.fn() },
 }));
 jest.mock('@librechat/api', () => ({
+  trackEvent: jest.fn(),
   inspectContent: jest.fn(),
   extractFileContent: jest.fn((input) => [input]),
   hasActiveFileFieldPolicy: jest.fn((filters, candidates) => {

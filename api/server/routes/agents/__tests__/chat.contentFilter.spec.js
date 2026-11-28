@@ -15,6 +15,7 @@ jest.mock('@librechat/data-schemas', () => ({
 }));
 
 jest.mock('@librechat/api', () => ({
+  trackEvent: jest.fn(),
   validateChatMessageIds: jest.requireActual(
     '../../../../../packages/api/src/middleware/messageIds',
   ).validateChatMessageIds,

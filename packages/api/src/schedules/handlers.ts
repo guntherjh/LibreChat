@@ -35,6 +35,7 @@ import {
 import { ScheduleMCPError, getScheduleMCPFailureCode } from './mcp';
 import { ScheduleMCPConsentError } from './authorization/service';
 import { resolveScheduleProjectId } from './types';
+import { trackEvent } from '~/pendo';
 
 export interface SchedulesHandlersDeps {
   preflightMCP: ScheduleMCPPreflight;
@@ -921,6 +922,14 @@ export function createSchedulesHandlers(deps: SchedulesHandlersDeps): SchedulesH
       res.status(410).json({ error: 'This account is being deleted' });
       return;
     }
+    const trackCreated = (): void =>
+      trackEvent('Schedule created', user, {
+        frequency: parsed.data.cadence.frequency,
+        target: parsed.data.target,
+        enabled: parsed.data.enabled,
+        file_count: parsed.data.file_ids?.length ?? 0,
+        in_project: chatProjectId != null,
+      });
     // ARM last, through the SAME unarmed-guarded CAS the replay path and the
     // reconciler's sweep use — one arming write per schedule, ever. Fenced on the
     // revision stamped at insert: a PATCH racing this arm bumps configRevision, and
@@ -968,10 +977,12 @@ export function createSchedulesHandlers(deps: SchedulesHandlersDeps): SchedulesH
         logger.warn(`[schedules] create for ${id} left unarmed after a concurrent edit`);
       }
       logger.info(`[schedules] created ${id} for user ${user.id}`);
+      trackCreated();
       res.status(201).json(toWireSchedule(current, limits));
       return;
     }
     logger.info(`[schedules] created ${id} for user ${user.id}`);
+    trackCreated();
     res.status(201).json(toWireSchedule(created, limits));
   }
 
@@ -1349,6 +1360,7 @@ export function createSchedulesHandlers(deps: SchedulesHandlersDeps): SchedulesH
       });
       return;
     }
+    trackEvent('Scheduled run started', requestUser(req), { trigger: 'manual' });
     res.json({ scheduleId: schedule.id, conversationId: result.conversationId, status: 'started' });
   }
 

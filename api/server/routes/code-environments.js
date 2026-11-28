@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const {
+  trackOnSuccess,
   GenerationJobManager,
   createCodeEnvironmentHttpHandlers,
   createCodeSetupRouter,
@@ -49,8 +50,11 @@ router.use(
 );
 router.use(requireJwtAuth);
 router.get('/', (req, res, next) => getHandlers().list(req, res, next));
-router.post('/pairings', codeEnvironmentPairingLimiter, (req, res, next) =>
-  getHandlers().pair(req, res, next),
+router.post(
+  '/pairings',
+  codeEnvironmentPairingLimiter,
+  trackOnSuccess('Code environment paired'),
+  (req, res, next) => getHandlers().pair(req, res, next),
 );
 router.post('/', requireCodeEnvironmentManage, (req, res, next) =>
   getHandlers().register(req, res, next),

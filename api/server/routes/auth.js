@@ -1,6 +1,8 @@
 const express = require('express');
 const {
   limiterCache,
+  trackOnSuccess,
+  hasIssuedSession,
   requirePreAuthTenantContext,
   createSetBalanceConfig,
   requireTwoFactorSetupToken,
@@ -68,6 +70,9 @@ const getCloudFrontAuthCookieRefreshResult = (req, res) => {
 };
 
 const ldapAuth = !!process.env.LDAP_URL && !!process.env.LDAP_USER_SEARCH_BASE;
+/** A sign-in counts only once a session is issued, not when a 2FA challenge is returned. */
+const trackSignIn = (method) =>
+  trackOnSuccess('Signed in', (_req, res) => (hasIssuedSession(res) ? { method } : null));
 //Local
 router.post('/logout', middleware.requireJwtAuth, logoutController);
 router.post(
@@ -80,6 +85,7 @@ router.post(
   middleware.validateEmailLogin,
   ldapAuth ? middleware.requireLdapAuth : middleware.requireLocalAuth,
   setBalanceConfig,
+  trackSignIn(ldapAuth ? 'ldap' : 'local'),
   loginController,
 );
 router.post('/refresh', refreshController);
@@ -180,6 +186,7 @@ router.post(
   middleware.setTwoFactorTempUser,
   middleware.twoFactorTempLimiter,
   middleware.checkBan,
+  trackSignIn('two_factor'),
   verify2FAWithTempToken,
 );
 router.post('/2fa/confirm', middleware.requireJwtAuth, twoFactorManagementLimiter, confirm2FA);
@@ -215,6 +222,7 @@ router.post(
   middleware.checkBan,
   authenticatePasskey,
   setBalanceConfig,
+  trackSignIn('passkey'),
   loginController,
 );
 router.get('/passkey', middleware.requireJwtAuth, listPasskeys);

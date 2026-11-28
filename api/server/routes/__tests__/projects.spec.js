@@ -32,7 +32,10 @@ const mockConfigMiddleware = jest.fn((req, _res, next) => {
   next();
 });
 
-jest.mock('@librechat/api', () => ({ createProjectHandlers: mockCreateProjectHandlers }));
+jest.mock('@librechat/api', () => ({
+  createProjectHandlers: mockCreateProjectHandlers,
+  trackOnSuccess: jest.fn(() => (_req, _res, next) => next()),
+}));
 jest.mock('~/models', () => ({
   listChatProjects: jest.fn(),
   createChatProject: jest.fn(),

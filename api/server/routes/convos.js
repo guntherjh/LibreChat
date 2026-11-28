@@ -53,6 +53,8 @@ const {
   GenerationJobManager,
   isStopConfirmed,
   withToolCallPreviews,
+  trackOnSuccess,
+  trackEvent,
 } = require('@librechat/api');
 const { logger } = require('@librechat/data-schemas');
 const { CacheKeys, EModelEndpoint } = require('librechat-data-provider');
@@ -600,6 +602,7 @@ router.delete('/', configMiddleware, async (req, res) => {
         () => deleteOwnerConversationPersistence(req.user.id, filter, tenantId, checkpointer),
         () => deleteOwnerConversationPersistence(req.user.id, filter, tenantId, checkpointer),
       );
+      trackEvent('Conversation deleted', req.user, { scope: 'all' });
       return res.status(201).json(fencedDeletion.result);
     }
     let deletedConversationIds = [
@@ -654,6 +657,10 @@ router.delete('/', configMiddleware, async (req, res) => {
       );
     }
     await checkpointDeletion?.acknowledge();
+    trackEvent('Conversation deleted', req.user, {
+      scope: 'single',
+      endpoint: typeof endpoint === 'string' ? endpoint : undefined,
+    });
     res.status(201).json(dbResponse);
   } catch (error) {
     logger.error('Error clearing conversations', error);
@@ -680,6 +687,7 @@ router.delete('/all', configMiddleware, async (req, res) => {
     const dbResponse = fencedDeletion.result;
     await db.deleteToolCalls(req.user.id);
     await deleteAllSharedLinksWithCleanup(req.user.id);
+    trackEvent('Conversation deleted', req.user, { scope: 'all' });
     res.status(201).json(dbResponse);
   } catch (error) {
     logger.error('Error clearing conversations', error);
@@ -742,6 +750,7 @@ router.post(
   '/update',
   validateConvoAccess,
   configMiddleware,
+  trackOnSuccess('Conversation renamed'),
   createRenameConversationHandler({
     saveConvo: db.saveConvo,
     getConvo: db.getConvo,
@@ -800,6 +809,10 @@ router.post(
           ? {}
           : { legacyPii: req.config.messageFilter.pii }),
       });
+      trackEvent('Conversations imported', req.user, {
+        file_type: req.file.mimetype,
+        file_size: req.file.size,
+      });
       res.status(201).json({ message: 'Conversation(s) imported successfully' });
     } catch (error) {
       if (isContentFilterError(error)) {
@@ -843,6 +856,11 @@ router.post('/fork', forkIpLimiter, forkUserLimiter, configMiddleware, async (re
         : { legacyPii: req.config.messageFilter.pii }),
     });
 
+    trackEvent('Conversation forked', req.user, {
+      option: typeof option === 'string' ? option : undefined,
+      split_at_target: splitAtTarget === true,
+      exclude_files: excludeFiles === true,
+    });
     res.json(withToolCallPreviews(req, result));
   } catch (error) {
     if (isContentFilterError(error)) {
@@ -876,6 +894,7 @@ router.post(
           ? {}
           : { legacyPii: req.config.messageFilter.pii }),
       });
+      trackEvent('Conversation duplicated', req.user);
       res.status(201).json(withToolCallPreviews(req, result));
     } catch (error) {
       if (isContentFilterError(error)) {

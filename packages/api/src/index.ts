@@ -71,6 +71,8 @@ export * from './mcp/oauth/OAuthReconnectionManager';
 export * from './mcp/oauth/OAuthReconnectionTracker';
 /* Crypto */
 export * from './crypto';
+/* Pendo */
+export * from './pendo';
 /* Flow */
 export * from './flow/manager';
 /* Middleware */

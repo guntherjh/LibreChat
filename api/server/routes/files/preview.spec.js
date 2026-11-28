@@ -16,6 +16,7 @@ jest.mock('@librechat/data-schemas', () => ({
 }));
 
 jest.mock('@librechat/api', () => ({
+  trackEvent: jest.fn(),
   refreshS3FileUrls: jest.fn(),
   resolveUploadErrorMessage: jest.fn(),
   verifyAgentUploadPermission: jest.fn(),

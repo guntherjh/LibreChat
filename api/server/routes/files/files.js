@@ -24,6 +24,7 @@ const {
   resolveAssistantToolPermissions,
   resolveDownloadPath,
   pipeToResponse,
+  trackEvent,
 } = require('@librechat/api');
 const {
   isUUID,
@@ -797,9 +798,28 @@ const handleFileUpload = async (req, res) => {
   /** Opened only once auth/validation has passed, right before the potentially
    * long-running upload processing begins — see `startUploadSseStream`. */
   let sseStream = null;
+  /** Read at send time: processing rewrites `metadata` and sanitizes the file name. */
+  const trackUpload = () =>
+    trackEvent('File uploaded', req.user, {
+      endpoint: metadata.endpoint,
+      tool_resource: metadata.tool_resource,
+      file_type: req.file?.mimetype,
+      file_size: req.file?.size,
+    });
+  /** Without a stream, only the stored file answers 200; a stream sends it as `data`. */
+  res.once('finish', () => {
+    if (!sseStream && res.statusCode === 200) {
+      trackUpload();
+    }
+  });
   const openSseStreamIfRequested = () => {
     if (shouldUseUploadSse(req)) {
       sseStream = startUploadSseStream(res);
+      const { sendData } = sseStream;
+      sseStream.sendData = (data) => {
+        sendData(data);
+        trackUpload();
+      };
     }
   };
 

@@ -8,6 +8,7 @@ const {
   contentFilterBlockResponse,
   contentFilterUninspectableResponse,
   getBlockedUninspectableFileField,
+  trackEvent,
 } = require('@librechat/api');
 const { getStrategyFunctions } = require('~/server/services/Files/strategies');
 const { resizeAvatar } = require('~/server/services/Files/images/avatar');
@@ -57,6 +58,10 @@ router.post('/', async (req, res) => {
       tenantId: req.user.tenantId,
     });
 
+    trackEvent('Avatar updated', req.user, {
+      file_type: req.file.mimetype,
+      manual: manual === 'true' || manual === true,
+    });
     res.json({ url });
   } catch (error) {
     const message = 'An error occurred while uploading the profile picture';

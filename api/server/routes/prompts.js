@@ -1,5 +1,6 @@
 const express = require('express');
 const {
+  trackOnSuccess,
   generateCheckAccess,
   createPromptHandlers,
   invalidateLinkedPrompt,
@@ -72,7 +73,16 @@ router.get(
 router.get('/all', configMiddleware, handlers.listAllPromptGroups);
 router.get('/groups', configMiddleware, handlers.listPromptGroups);
 
-router.post('/', checkPromptCreate, configMiddleware, handlers.createPromptGroup);
+router.post(
+  '/',
+  checkPromptCreate,
+  configMiddleware,
+  trackOnSuccess('Prompt created', (req) => ({
+    category: typeof req.body?.group?.category === 'string' ? req.body.group.category : undefined,
+    prompt_type: typeof req.body?.prompt?.type === 'string' ? req.body.prompt.type : undefined,
+  })),
+  handlers.createPromptGroup,
+);
 router.post(
   '/groups/:groupId/prompts',
   checkPromptAccess,

@@ -37,6 +37,7 @@ const {
   resolveMessagesPageSize,
   awaitPageSize,
   withMessageToolCallPreviews,
+  trackEvent,
 } = require('@librechat/api');
 const subagentThreadTaskStore = require('~/server/services/Endpoints/agents/subagentThreadStore');
 const { getAppConfig } = require('~/server/services/Config');
@@ -820,6 +821,14 @@ router.put(
         conversationId: updatedMessage.conversationId,
         messageId,
       });
+
+      if (feedbackResult != null) {
+        trackEvent('Feedback recorded', req.user, {
+          rating: feedbackResult.data.rating,
+          tag: feedbackResult.data.tag,
+          endpoint: updatedMessage.endpoint,
+        });
+      }
 
       res.json({
         messageId,

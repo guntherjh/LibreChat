@@ -85,6 +85,8 @@ module.exports = {
   agents: () => ({ sleep: jest.fn() }),
 
   api: (overrides = {}) => ({
+    trackEvent: jest.fn(),
+    trackOnSuccess: jest.fn(() => (_req, _res, next) => next()),
     createGetConversationHandler: jest.requireActual(
       '../../../../packages/api/src/conversations/load.ts',
     ).createGetConversationHandler,

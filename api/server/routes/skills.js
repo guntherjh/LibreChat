@@ -7,6 +7,7 @@ const {
   createSkillBlobReserver,
   createSkillBufferWriter,
   createSkillStorageResolver,
+  trackOnSuccess,
   generateCheckAccess,
   restoreTenantContextFromReq,
 } = require('@librechat/api');
@@ -178,11 +179,23 @@ router.post(
   fileUploadUserLimiter,
   skillUpload,
   restoreTenantContextFromReq,
+  trackOnSuccess('Skill imported', (req) => ({
+    file_type: path.extname(req.file?.originalname ?? '').toLowerCase() || undefined,
+    file_size: req.file?.size,
+  })),
   importHandler,
 );
 
 router.get('/', maybeStartRequestSkillSync, handlers.list);
-router.post('/', checkSkillCreate, handlers.create);
+router.post(
+  '/',
+  checkSkillCreate,
+  trackOnSuccess('Skill created', (req) => ({
+    category: typeof req.body?.category === 'string' ? req.body.category : undefined,
+    always_apply: req.body?.alwaysApply === true,
+  })),
+  handlers.create,
+);
 
 router.get(
   '/:id',

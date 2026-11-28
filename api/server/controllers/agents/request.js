@@ -73,6 +73,7 @@ const {
   isTemporaryTurn,
   getPreliminaryResponseMessageId,
   describeCreatedTurn,
+  trackEvent,
 } = require('@librechat/api');
 const { disposeClient } = require('~/server/cleanup');
 const {
@@ -3163,6 +3164,13 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
           savedResponseMessage,
           'api/server/controllers/agents/request.js - recovered response message reference',
         );
+        trackEvent('Response generated', req.user, {
+          endpoint: endpointOption?.endpoint,
+          model: response.model ?? getEndpointResponseModel(endpointOption),
+          unfinished: responseIsUnfinished,
+          new_conversation: isNewConvo,
+          scheduled: isScheduledFire,
+        });
         logAgentMemorySnapshot('after_terminal_save', terminalMemoryContext);
         if (appliedEventActor != null) {
           const recorded = await recordAgentEventActorReconciliation({

@@ -28,6 +28,7 @@ import {
 import { getAuthorizingCredential } from './gates';
 import { sanitizeUserForResponse } from './user';
 import { clearCloudFrontCookies } from '~/cdn';
+import { trackEvent } from '~/pendo';
 
 type LoginChallengeBody = { tempToken?: string; token?: string; backupCode?: string };
 type SetupBody = { token?: string };
@@ -321,6 +322,7 @@ export function createEnrollmentControllers(
           .json({ message: 'Password was reset during setup, please sign in again' });
       }
 
+      trackEvent('Two-factor enabled', { id: userId }, { flow: 'required' });
       return res.status(200).json({ token: authToken, user: userData });
     } catch (err) {
       logger.error('[finalize2FASetup]', err);
@@ -546,6 +548,7 @@ export function createOptInTwoFactorConfirmation(deps: OptInConfirmationDependen
         return res.status(401).json({ message: 'Unauthorized' });
       }
 
+      trackEvent('Two-factor enabled', { id: userId }, { flow: 'opt_in' });
       return res.status(200).json({ token: authToken, user: sanitizeUser(promoted) });
     } catch (err) {
       logger.error('[confirm2FA]', err);

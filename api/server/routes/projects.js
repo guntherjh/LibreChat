@@ -1,5 +1,5 @@
 const express = require('express');
-const { createProjectHandlers } = require('@librechat/api');
+const { trackOnSuccess, createProjectHandlers } = require('@librechat/api');
 const { configMiddleware, requireJwtAuth } = require('~/server/middleware');
 const db = require('~/models');
 
@@ -19,10 +19,22 @@ const handlers = createProjectHandlers({
 router.use(requireJwtAuth);
 router.get('/', handlers.listProjects);
 router.post('/', configMiddleware, handlers.createProject);
-router.put('/conversations/:conversationId', handlers.assignConversationToProject);
+/** Clearing the project (a `null` projectId) unassigns the chat, which is not tracked. */
+router.put(
+  '/conversations/:conversationId',
+  trackOnSuccess('Chat assigned to project', (req) =>
+    typeof req.body?.projectId === 'string' ? {} : null,
+  ),
+  handlers.assignConversationToProject,
+);
 router.get('/:projectId/files/available', handlers.listAvailableProjectFiles);
 router.get('/:projectId/files', handlers.listProjectFiles);
-router.post('/:projectId/files', configMiddleware, handlers.addProjectFile);
+router.post(
+  '/:projectId/files',
+  configMiddleware,
+  trackOnSuccess('Project file added'),
+  handlers.addProjectFile,
+);
 router.delete('/:projectId/files/:fileId', handlers.removeProjectFile);
 router.get('/:projectId', handlers.getProject);
 router.patch('/:projectId', configMiddleware, handlers.updateProject);

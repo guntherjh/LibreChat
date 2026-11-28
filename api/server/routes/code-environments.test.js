@@ -56,6 +56,7 @@ jest.mock('@librechat/data-schemas', () => ({
 }));
 
 jest.mock('@librechat/api', () => ({
+  trackOnSuccess: jest.fn(() => (_req, _res, next) => next()),
   GenerationJobManager: mockGenerationJobManager,
   createCodeSetupRouter: jest.fn((deps) => {
     mockSetupDeps = deps;

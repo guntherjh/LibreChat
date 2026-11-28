@@ -78,6 +78,7 @@ const mockCreateShareContentPreflight = jest.fn((filters, options = {}) => {
 });
 
 jest.mock('@librechat/api', () => ({
+  trackEvent: jest.fn(),
   prepareResultToolCallPreviews: (...args) => mockPrepareResultToolCallPreviews(...args),
   resolveDownloadPath: (file) => file.storageKey || file.filepath,
   assertModelBoundContent: (...args) => mockAssertModelBoundContent(...args),

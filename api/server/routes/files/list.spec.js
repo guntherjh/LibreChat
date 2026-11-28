@@ -11,6 +11,7 @@ jest.mock('@librechat/data-schemas', () => ({
 const mockHandleFileListRequest = jest.fn();
 const mockRefreshS3FileUrls = jest.fn();
 jest.mock('@librechat/api', () => ({
+  trackEvent: jest.fn(),
   handleFileListRequest: (...args) => mockHandleFileListRequest(...args),
   refreshS3FileUrls: (...args) => mockRefreshS3FileUrls(...args),
   resolveUploadErrorMessage: jest.fn(),

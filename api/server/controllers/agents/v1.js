@@ -56,6 +56,7 @@ const {
   authorizeAgentRestore,
   applySdkAgentBindingWrite,
   getSdkAgentWriteErrorStatus,
+  trackEvent,
 } = require('@librechat/api');
 const {
   Time,
@@ -941,6 +942,12 @@ const createAgentHandler = async (req, res) => {
       );
     }
 
+    trackEvent('Agent created', req.user, {
+      provider: agent.provider,
+      model: agent.model,
+      tools_count: agent.tools?.length ?? 0,
+      category: agent.category,
+    });
     res.status(201).json(agent);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -1421,16 +1428,16 @@ const updateAgentHandler = async (req, res) => {
     }
     updateData = applyInstructionsPromptUnset(updateData);
 
-    let updatedAgent =
-      Object.keys(updateData).length > 0
-        ? await db.updateAgent({ id }, updateData, {
-            updatingUserId: req.user.id,
-            expectedMCPAccess: {
-              names: existingAgent.mcpServerNames ?? [],
-              updatedAt: existingAgent.updatedAt,
-            },
-          })
-        : existingAgent;
+    const hasChanges = Object.keys(updateData).length > 0;
+    let updatedAgent = hasChanges
+      ? await db.updateAgent({ id }, updateData, {
+          updatingUserId: req.user.id,
+          expectedMCPAccess: {
+            names: existingAgent.mcpServerNames ?? [],
+            updatedAt: existingAgent.updatedAt,
+          },
+        })
+      : existingAgent;
 
     // Add version count to the response
     updatedAgent.version = updatedAgent.versions ? updatedAgent.versions.length : 0;
@@ -1451,6 +1458,14 @@ const updateAgentHandler = async (req, res) => {
       agent: updatedAgent,
     });
 
+    if (hasChanges) {
+      trackEvent('Agent updated', req.user, {
+        provider: updatedAgent.provider,
+        model: updatedAgent.model,
+        version: updatedAgent.version,
+        tools_count: updatedAgent.tools?.length ?? 0,
+      });
+    }
     return res.json(presentedAgent);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -2283,6 +2298,10 @@ const revertAgentVersionHandler = async (req, res) => {
       agent: updatedAgent,
     });
 
+    trackEvent('Agent version restored', req.user, {
+      version_index: Number(version_index),
+      version_count: updatedAgent.versions?.length,
+    });
     return res.json(presentedAgent);
   } catch (error) {
     logger.error('[/agents/:id/revert] Error reverting Agent version', error);

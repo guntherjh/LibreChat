@@ -51,6 +51,7 @@ jest.mock('@librechat/api', () => {
   };
 
   return {
+    trackEvent: jest.fn(),
     prepareToolCallPreviews: jest.fn(() => (messages) => Promise.resolve(messages)),
     createToolCallPartHandler: jest.fn(() => (_req, res) => res.status(404).end()),
     createSubagentAttachmentCallsHandler: jest.fn(() => (_req, res) => res.status(404).end()),

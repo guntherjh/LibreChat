@@ -40,6 +40,7 @@ const {
   PASSWORD_RESET_REQUEST_MESSAGE,
   getOpenIDAppAccessToken,
   getOpenIDBearerAudiences,
+  trackEvent,
 } = require('@librechat/api');
 const {
   findUser,
@@ -310,6 +311,7 @@ const sendVerificationEmail = async (user) => {
   });
 
   logger.info(`[sendVerificationEmail] Verification link issued. [User ID: ${user._id}]`);
+  trackEvent('Verification email sent', { _id: user._id }, { source: 'registration' });
 };
 
 /**
@@ -382,6 +384,7 @@ const verifyEmail = async (req) => {
 
   await deleteTokens(getEmailVerificationTokenDeleteQuery(emailVerificationData));
   logger.info(`[verifyEmail] Email verification successful [User ID: ${user._id}]`);
+  trackEvent('Email verified', updatedUser);
   return { message: 'Email verification was successful', status: 'success' };
 };
 
@@ -470,6 +473,10 @@ const registerUser = async (user, additionalData = {}) => {
     } else {
       await updateUser(newUserId, { emailVerified: true });
     }
+    trackEvent('Account registered', newUser, {
+      provider: newUserData.provider,
+      verification_required: emailEnabled && !newUser.emailVerified,
+    });
 
     /** `userCreated` separates this from the identical 200 returned when the email is
      * already in use, so a caller can act on an account having actually been created
@@ -543,7 +550,16 @@ const requestPasswordReset = async (req) => {
     return { message: genericResetMessage };
   }
   return issuePasswordReset(
-    { deleteTokens, createToken, createTokenHash, sendEmail },
+    {
+      deleteTokens,
+      createToken,
+      createTokenHash,
+      sendEmail: async (data) => {
+        const sent = await sendEmail(data);
+        trackEvent('Password reset email sent', user);
+        return sent;
+      },
+    },
     {
       user,
       emailEnabled: checkEmailConfig(),
@@ -561,8 +577,8 @@ const requestPasswordReset = async (req) => {
  * @param {string} password
  * @returns {Promise<import('@librechat/api').PasswordResetResult>}
  */
-const resetPassword = (userId, token, password) =>
-  resetPasswordWithToken(
+const resetPassword = async (userId, token, password) => {
+  const result = await resetPasswordWithToken(
     {
       findResetToken: findPasswordResetToken,
       getUserById,
@@ -580,6 +596,11 @@ const resetPassword = (userId, token, password) =>
     },
     { userId, token, password },
   );
+  if (result.ok) {
+    trackEvent('Password reset completed', { id: userId });
+  }
+  return result;
+};
 
 /**
  * Reads the previously issued CloudFront cookie scope used for stale cookie cleanup.
@@ -970,6 +991,7 @@ const resendVerificationEmail = async (req) => {
     });
 
     logger.info(`[resendVerificationEmail] Verification link issued. [User ID: ${user._id}]`);
+    trackEvent('Verification email sent', user, { source: 'resend' });
 
     return {
       status: 200,
