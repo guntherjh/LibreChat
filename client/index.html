@@ -409,14 +409,18 @@
               el.tagName === 'LINK' && /preload/.test(el.rel || '') && /\.js$/.test(el.href || '');
             if (failedScript || failedPreload) {
               var isRumBootstrap = el.getAttribute('data-lc-rum-bootstrap') === 'true';
+              /* The Novus by Pendo agent is a third-party script that content blockers often
+               * refuse. It is not one of this build's assets, so reloading cannot recover it. */
+              var isPendoAgent =
+                !!failedScript && /\/agent\/static\/[^/]+\/pendo\.js(?:[?#]|$)/.test(el.src);
               window.__lcRumPush('asset-load-error', {
                 tagName: el.tagName,
                 assetUrl: el.src || el.href,
-                optional: isRumBootstrap,
+                optional: isRumBootstrap || isPendoAgent,
               });
               /* Caught optional imports must not reload the app. Required lazy imports
                * recover at their own boundary; preload links only report diagnostics. */
-              if (isRumBootstrap || failedPreload) {
+              if (isRumBootstrap || isPendoAgent || failedPreload) {
                 return;
               }
               window.__lcRecoverStaleAssets();
@@ -436,6 +440,17 @@
           }
         });
       })();
+    </script>
+    <!-- Novus by Pendo install snippet. The agent itself is initialized in src/utils/pendo.ts. -->
+    <!-- prettier-ignore -->
+    <script>
+    (function(apiKey){
+        (function(p,e,n,d,o){var v,w,x,y,z;o=p[d]=p[d]||{};o._q=o._q||[];
+        v=['initialize','identify','updateOptions','pageLoad','track', 'trackAgent'];for(w=0,x=v.length;w<x;++w)(function(m){
+        o[m]=o[m]||function(){o._q[m===v[0]?'unshift':'push']([m].concat([].slice.call(arguments,0)));};})(v[w]);
+        y=e.createElement(n);y.async=!0;y.src='https://cdn.pendo-security.pendo-dev.com/agent/static/'+apiKey+'/pendo.js';
+        z=e.getElementsByTagName(n)[0];z.parentNode.insertBefore(y,z);})(window,document,'script','pendo');
+    })('fd08ac9b-0728-41f6-9b7a-7cfc5ad627d9');
     </script>
     <script
       data-lc-rum-bootstrap="true"

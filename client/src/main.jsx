@@ -8,9 +8,13 @@ import './style.css';
 import './mobile.css';
 import { ApiErrorBoundaryProvider } from './hooks/ApiErrorBoundaryContext';
 import { clearTTSCache } from './utils/ttscache';
+import { initializePendo } from './utils/pendo';
 
 /** Read-aloud audio lives in memory now; drop what earlier versions persisted to disk. */
 void clearTTSCache();
+
+/** The only `initialize` call: later calls are ignored by the agent, so sign-in uses `identify`. */
+initializePendo();
 
 const container = document.getElementById('root');
 const root = createRoot(container);

@@ -49,6 +49,7 @@ import {
 import { resetChatFilterSessionAtom } from '~/components/Conversations/chatFilters';
 import { TAuthConfig, TUserContext, TAuthContext, TResError } from '~/common';
 import { resetFacetsAtom } from '~/components/Conversations/facets';
+import { identifyPendo, clearPendo } from '~/utils/pendo';
 import { resetMCPStateAtom } from '~/store/mcp';
 import useTimeout from './useTimeout';
 import store from '~/store';
@@ -271,6 +272,7 @@ const AuthContextProvider = ({
 
   const logout = useCallback(
     (redirect?: string) => {
+      clearPendo();
       clearPostLoginRedirect();
       clearTwoFactorSetupToken();
       if (redirect) {
@@ -317,6 +319,13 @@ const AuthContextProvider = ({
   }, [setUser]);
 
   const userQuery = useGetUserQuery({ enabled: !!(token ?? '') });
+
+  /** Every sign-in path (password, 2FA, social refresh) and later profile updates land here. */
+  useEffect(() => {
+    if (isAuthenticated && user?.id) {
+      identifyPendo(user);
+    }
+  }, [isAuthenticated, user]);
 
   const login = useCallback(
     (data: t.TLoginUser) => {
