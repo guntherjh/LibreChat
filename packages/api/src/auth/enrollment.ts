@@ -429,6 +429,8 @@ export interface OptInConfirmationDependencies
     session: RotatableSession,
     req: Request,
   ) => Promise<string>;
+  /** Called once an opt-in enrollment is confirmed and the session rotated, for analytics. */
+  onEnabled?: (user: StoredTwoFactorAccount) => void;
 }
 
 type OptInRequest = Request<Record<string, string>, object, SetupBody> & {
@@ -546,6 +548,7 @@ export function createOptInTwoFactorConfirmation(deps: OptInConfirmationDependen
         return res.status(401).json({ message: 'Unauthorized' });
       }
 
+      deps.onEnabled?.(user);
       return res.status(200).json({ token: authToken, user: sanitizeUser(promoted) });
     } catch (err) {
       logger.error('[confirm2FA]', err);

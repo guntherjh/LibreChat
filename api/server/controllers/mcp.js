@@ -25,6 +25,7 @@ const {
   getMCPErrorResponse,
   prepareMCPServerOAuthDeletion,
   cleanupDeletedMCPServerOAuthUsers,
+  trackPendoEvent,
 } = require('@librechat/api');
 const {
   Constants,
@@ -485,6 +486,10 @@ const createMCPServerController = async (req, res) => {
     if (settled.postWriteError) {
       throw settled.postWriteError;
     }
+    trackPendoEvent('MCP server added', req.user, {
+      transport: result.config?.type,
+      has_oauth: Boolean(result.config?.oauth),
+    });
     res.status(201).json({
       serverName: result.serverName,
       ...redactServerSecrets(result.config, { canEdit: true }),

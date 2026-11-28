@@ -3,6 +3,7 @@ const {
   clearCloudFrontCookies,
   clearEnrollmentNonces,
   createOptInTwoFactorConfirmation,
+  trackPendoEvent,
 } = require('@librechat/api');
 const {
   verifyOTPOrBackupCode,
@@ -119,6 +120,7 @@ const confirm2FA = createOptInTwoFactorConfirmation({
   awaitAuthUserDocEviction,
   clearCloudFrontCookies,
   setAuthTokens,
+  onEnabled: (user) => trackPendoEvent('Two-factor authentication enabled', user),
 });
 
 /**

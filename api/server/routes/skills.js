@@ -9,6 +9,7 @@ const {
   createSkillStorageResolver,
   generateCheckAccess,
   restoreTenantContextFromReq,
+  trackPendoSuccess,
 } = require('@librechat/api');
 const { logger } = require('@librechat/data-schemas');
 const {
@@ -178,11 +179,17 @@ router.post(
   fileUploadUserLimiter,
   skillUpload,
   restoreTenantContextFromReq,
+  trackPendoSuccess('Skill created', () => ({ source: 'import' })),
   importHandler,
 );
 
 router.get('/', maybeStartRequestSkillSync, handlers.list);
-router.post('/', checkSkillCreate, handlers.create);
+router.post(
+  '/',
+  checkSkillCreate,
+  trackPendoSuccess('Skill created', () => ({ source: 'manual' })),
+  handlers.create,
+);
 
 router.get(
   '/:id',

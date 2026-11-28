@@ -6,7 +6,11 @@ const {
   ResourceType,
   PermissionBits,
 } = require('librechat-data-provider');
-const { createAgentAdminPermissionAccess, isAgentPermissionsAdmin } = require('@librechat/api');
+const {
+  createAgentAdminPermissionAccess,
+  isAgentPermissionsAdmin,
+  trackPendoSuccess,
+} = require('@librechat/api');
 const {
   getUserEffectivePermissions,
   getAllEffectivePermissions,
@@ -204,6 +208,12 @@ router.put(
   checkSharePublicAccess,
   rejectSharedLinkOwnerPermissionChanges,
   configMiddleware,
+  trackPendoSuccess('Access permissions updated', (req) => ({
+    resource_type: req.params.resourceType,
+    principals_updated: Array.isArray(req.body?.updated) ? req.body.updated.length : 0,
+    principals_removed: Array.isArray(req.body?.removed) ? req.body.removed.length : 0,
+    public: req.body?.public === true,
+  })),
   updateResourcePermissions,
 );
 

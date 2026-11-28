@@ -141,6 +141,8 @@ export * from './shared-links/session';
 export * from './stream';
 /* Diagnostics */
 export { memoryDiagnostics } from './utils/memory';
+/* Pendo */
+export * from './pendo';
 /* RUM */
 export * from './rum/proxy';
 export * from './rum/policy';

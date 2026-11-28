@@ -6,6 +6,7 @@ import type { Types } from 'mongoose';
 import type { GetAppConfigOptions } from '~/app/service';
 import { getAppConfigOptionsFromUser } from '~/app/service';
 import { resolveRemoteIntegrations } from './grants';
+import { trackPendoEvent } from '~/pendo';
 
 export interface ApiKeyHandlerDependencies {
   createAgentApiKey: (params: {
@@ -96,6 +97,7 @@ export function createApiKeyHandlers(deps: ApiKeyHandlerDependencies): {
         expiresAt: expiresAt ? new Date(expiresAt) : null,
       });
 
+      trackPendoEvent('Agent API key created', req.user, { has_expiration: Boolean(expiresAt) });
       res.status(201).json({
         id: result.id,
         name: result.name,

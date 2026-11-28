@@ -56,6 +56,7 @@ const {
   authorizeAgentRestore,
   applySdkAgentBindingWrite,
   getSdkAgentWriteErrorStatus,
+  trackPendoEvent,
 } = require('@librechat/api');
 const {
   Time,
@@ -941,6 +942,11 @@ const createAgentHandler = async (req, res) => {
       );
     }
 
+    trackPendoEvent('Agent created', req.user, {
+      provider: agent.provider,
+      model: agent.model,
+      tool_count: agent.tools?.length ?? 0,
+    });
     res.status(201).json(agent);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -1434,6 +1440,13 @@ const updateAgentHandler = async (req, res) => {
 
     // Add version count to the response
     updatedAgent.version = updatedAgent.versions ? updatedAgent.versions.length : 0;
+    if (updatedAgent !== existingAgent) {
+      trackPendoEvent('Agent updated', req.user, {
+        provider: updatedAgent.provider,
+        model: updatedAgent.model,
+        version: updatedAgent.version,
+      });
+    }
 
     if (updatedAgent.author) {
       updatedAgent.author = updatedAgent.author.toString();

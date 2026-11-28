@@ -25,6 +25,7 @@ import type { GetProjectFiles } from './resources';
 import { toRuntimeFile, listChatProjectFileViews } from './resources';
 import { normalizeLimit, queryString } from '~/utils';
 import { isSameChatProjectTenant } from './context';
+import { trackPendoEvent } from '~/pendo';
 
 const CHAT_PROJECT_CONFLICT = 'Project revision conflict';
 const PROJECT_NOT_FOUND = 'Project not found';
@@ -180,6 +181,10 @@ export function createProjectHandlers(deps: ProjectHandlerDependencies): {
         parsed.input,
         req.config?.projects,
       );
+      trackPendoEvent('Project created', req.user, {
+        has_description: Boolean(parsed.input.description?.trim()),
+        has_instructions: Boolean(parsed.input.instructions),
+      });
       return res.status(201).json(project);
     } catch (error) {
       logger.error('[projects] Error creating project', error);

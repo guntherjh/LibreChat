@@ -35,6 +35,7 @@ import {
 import { ScheduleMCPError, getScheduleMCPFailureCode } from './mcp';
 import { ScheduleMCPConsentError } from './authorization/service';
 import { resolveScheduleProjectId } from './types';
+import { trackPendoEvent } from '~/pendo';
 
 export interface SchedulesHandlersDeps {
   preflightMCP: ScheduleMCPPreflight;
@@ -900,6 +901,12 @@ export function createSchedulesHandlers(deps: SchedulesHandlersDeps): SchedulesH
       return;
     }
     // FRESH insert (this attempt owns the row) from here down; compensation is safe.
+    const announce = () =>
+      trackPendoEvent('Schedule created', user, {
+        enabled: parsed.data.enabled,
+        has_project: chatProjectId != null,
+        attachment_count: parsed.data.file_ids?.length ?? 0,
+      });
     //
     // POST-INSERT barrier re-check. The admission check at the top of this handler
     // shrinks the window to roughly one request, but cannot close it: account deletion
@@ -944,6 +951,7 @@ export function createSchedulesHandlers(deps: SchedulesHandlersDeps): SchedulesH
         if (rolledBack === 'kept') {
           const current = await deps.methods.getScheduleById(id, user.id);
           if (current != null) {
+            announce();
             res.status(201).json(toWireSchedule(current, limits));
             return;
           }
@@ -968,10 +976,12 @@ export function createSchedulesHandlers(deps: SchedulesHandlersDeps): SchedulesH
         logger.warn(`[schedules] create for ${id} left unarmed after a concurrent edit`);
       }
       logger.info(`[schedules] created ${id} for user ${user.id}`);
+      announce();
       res.status(201).json(toWireSchedule(current, limits));
       return;
     }
     logger.info(`[schedules] created ${id} for user ${user.id}`);
+    announce();
     res.status(201).json(toWireSchedule(created, limits));
   }
 
@@ -1349,6 +1359,7 @@ export function createSchedulesHandlers(deps: SchedulesHandlersDeps): SchedulesH
       });
       return;
     }
+    trackPendoEvent('Scheduled run started', requestUser(req), { trigger: 'manual' });
     res.json({ scheduleId: schedule.id, conversationId: result.conversationId, status: 'started' });
   }
 

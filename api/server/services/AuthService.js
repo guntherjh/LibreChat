@@ -40,6 +40,7 @@ const {
   PASSWORD_RESET_REQUEST_MESSAGE,
   getOpenIDAppAccessToken,
   getOpenIDBearerAudiences,
+  trackPendoEvent,
 } = require('@librechat/api');
 const {
   findUser,
@@ -310,6 +311,7 @@ const sendVerificationEmail = async (user) => {
   });
 
   logger.info(`[sendVerificationEmail] Verification link issued. [User ID: ${user._id}]`);
+  trackPendoEvent('Verification email sent', user, { trigger: 'registration' });
 };
 
 /**
@@ -471,6 +473,11 @@ const registerUser = async (user, additionalData = {}) => {
       await updateUser(newUserId, { emailVerified: true });
     }
 
+    trackPendoEvent('Account created', newUser, {
+      provider: newUserData.provider,
+      role,
+      email_verification_required: emailEnabled && !newUser.emailVerified,
+    });
     /** `userCreated` separates this from the identical 200 returned when the email is
      * already in use, so a caller can act on an account having actually been created
      * without the response body revealing which of the two happened. */
@@ -561,8 +568,8 @@ const requestPasswordReset = async (req) => {
  * @param {string} password
  * @returns {Promise<import('@librechat/api').PasswordResetResult>}
  */
-const resetPassword = (userId, token, password) =>
-  resetPasswordWithToken(
+const resetPassword = async (userId, token, password) => {
+  const result = await resetPasswordWithToken(
     {
       findResetToken: findPasswordResetToken,
       getUserById,
@@ -580,6 +587,11 @@ const resetPassword = (userId, token, password) =>
     },
     { userId, token, password },
   );
+  if (result.ok) {
+    trackPendoEvent('Password reset completed', { id: userId });
+  }
+  return result;
+};
 
 /**
  * Reads the previously issued CloudFront cookie scope used for stale cookie cleanup.
@@ -970,6 +982,7 @@ const resendVerificationEmail = async (req) => {
     });
 
     logger.info(`[resendVerificationEmail] Verification link issued. [User ID: ${user._id}]`);
+    trackPendoEvent('Verification email sent', user, { trigger: 'resend' });
 
     return {
       status: 200,

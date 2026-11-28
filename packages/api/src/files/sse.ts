@@ -1,7 +1,9 @@
 import type { Request, Response } from 'express';
+import type { PendoUser } from '~/pendo';
 import { getContentFilterError } from '~/middleware/contentFilter';
 import { SpreadsheetLimitError } from './documents/workbook';
 import { SpreadsheetBusyError } from './upload/errors';
+import { trackPendoEvent } from '~/pendo';
 import { isEnabled } from '~/utils';
 
 const HEARTBEAT_INTERVAL_MS = 1000;
@@ -146,6 +148,13 @@ export function sendUploadSuccess<T extends object>(
   message: string,
   result: T,
 ): void {
+  const req = res.req as (Request & { user?: PendoUser }) | undefined;
+  trackPendoEvent('File uploaded', req?.user, {
+    file_type: req?.file?.mimetype,
+    file_size_bytes: req?.file?.size,
+    endpoint: req?.body?.endpoint,
+    tool_resource: req?.body?.tool_resource,
+  });
   if (sseStream) {
     sseStream.sendData({ message, ...result });
     return;

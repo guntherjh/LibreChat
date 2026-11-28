@@ -103,6 +103,7 @@ export function createSlackWorkspaceRuntime(
     clientBaseUrl: string;
     fetch: SlackWorkspaceFetch;
     logError: (metadata: ReturnType<typeof getSafeErrorMetadata>) => void;
+    onConnect?: (principal: SlackWorkspacePrincipal, appId: string) => void;
   },
 ): SlackWorkspaceHandlers {
   const readSettings = createSlackWorkspaceSettingsReader(deps);
