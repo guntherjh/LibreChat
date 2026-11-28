@@ -1,5 +1,6 @@
 const { logger, tenantStorage, createChatExpirationDate } = require('@librechat/data-schemas');
 const { v5: uuidv5 } = require('uuid');
+const { closeTurn } = require('pendo-server-sdk');
 const {
   Constants,
   EModelEndpoint,
@@ -3543,6 +3544,7 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
         }
       })
       .finally(async () => {
+        closeTurn(conversationId);
         await Promise.allSettled([immediateTitlePromise, trailingWritePromise].filter(Boolean));
         if (providerExecutionId) {
           await GenerationJobManager.markProviderExecutionDrained?.(

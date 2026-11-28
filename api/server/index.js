@@ -1,6 +1,17 @@
 require('../config/credentials');
 
 const telemetry = require('./telemetry');
+const pendo = require('pendo-server-sdk');
+
+/* Pendo Agent Analytics. Initialized after `./telemetry` so it attaches to the app's
+ * OpenTelemetry provider, and before `@librechat/api` loads the LLM clients it patches. */
+pendo.init({
+  apiKey: '92f9f180-8543-4ce7-802c-60b5acfa40ea',
+  agentId: '8Lu89oG8F16E2l1fXQkq3VF7OBE',
+  endpoint: 'https://app.pendo-security.pendo-dev.com',
+  autoPatch: true,
+});
+
 const fs = require('fs');
 const path = require('path');
 require('module-alias')({ base: path.resolve(__dirname, '..') });
@@ -13,7 +24,7 @@ const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const { logger, runAsSystem, createRoleChangeSource } = require('@librechat/data-schemas');
-const { CacheKeys } = require('librechat-data-provider');
+const { CacheKeys, Constants } = require('librechat-data-provider');
 const getLogStores = require('~/cache/getLogStores');
 const {
   isEnabled,
@@ -124,6 +135,10 @@ const { getAppConfig, rederiveEndpoints, loadCustomConfig } = require('./service
 const staticCache = require('./utils/staticCache');
 const noIndex = require('./middleware/noIndex');
 const agentEventMethods = require('~/models');
+
+/* Flush buffered Pendo events on SIGINT and SIGTERM through the graceful-shutdown
+ * coordinator, after active generations stop and before the OpenTelemetry exporters close. */
+registerShutdownTask('pendo agent analytics', () => pendo.shutdown(), { priority: -50 });
 
 /** Route admin file-config MIME patterns through a linear-time engine (ReDoS-safe) on upload. */
 configureFileConfigRegexEngine();
@@ -502,6 +517,30 @@ const startServer = async () => {
   app.use('/api/balance', routes.balance);
   app.use('/api/models', routes.models);
   app.use('/api/config', preAuthTenantMiddleware, optionalJwtAuth, routes.config);
+  /* Pendo Agent Analytics: the visitor and conversation of each chat turn. */
+  app.use(
+    [
+      '/api/agents/chat',
+      '/api/agents/v1/chat/completions',
+      '/api/agents/v1/responses',
+      '/api/assistants/v1/chat',
+      '/api/assistants/v2/chat',
+    ],
+    pendo.middleware((req) => {
+      const id = req.body?.conversationId ?? req.body?.conversation_id;
+      return {
+        // TODO: map to the visitor id your Pendo web snippet uses. `req.user` is set by the
+        // route modules' auth middleware after this runs, so turns record as anonymous until then.
+        visitorId: req.user?.id,
+        // TODO: map to the Pendo account id.
+        accountId: req.user?.tenantId,
+        // TODO: a new conversation sends `new` or no id. Its real id is generated in
+        // `api/server/controllers/agents/request.js`, so its first turn has no conversation id.
+        conversationId:
+          typeof id === 'string' && id.trim() !== '' && id !== Constants.NEW_CONVO ? id : undefined,
+      };
+    }),
+  );
   app.use('/api/assistants', routes.assistants);
   app.use('/api/files', await routes.files.initialize());
   app.use(
